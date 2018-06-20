@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.fa7.todolist.model.Group;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,7 +15,7 @@ public class FireBasePersistence extends AppCompatActivity {
 
     Context context;
     DatabaseReference databaseReference;
-    String uID;
+    private String uID;
 
     public FireBasePersistence(Context context){
         this.context = context;
@@ -42,19 +43,42 @@ public class FireBasePersistence extends AppCompatActivity {
         }
     }
 
-    public void DataOnFirebase(final Object object, final String childkey, final Boolean add) {
+    public void DataGroupOnFirebase(final Group group, final Boolean add) {
         try {
             if (add) {
                 databaseReference
                         .child("TodoList")
-                        .child(uID)
-                        .child(childkey)
-                        .setValue(object);
+                        .child("Groups")
+                        .child(String.valueOf(group.getId()))
+                        .setValue(group);
             } else
                 databaseReference
                         .child("TodoList")
+                        .child("Groups")
+                        .child(String.valueOf(group.getId()))
+                        .removeValue();
+
+
+        } catch (Exception e) {
+            Log.e("DataOnFirebase", e.getMessage());
+        }
+    }
+
+    public void DataMyGroupOnFirebase(final Group group, final Boolean add) {
+        try {
+            if (add) {
+                databaseReference
+                        .child("TodoList")
+                        .child("MyGroups")
                         .child(uID)
-                        .child(childkey)
+                        .child(String.valueOf(group.getId()))
+                        .setValue(group);
+            } else
+                databaseReference
+                        .child("TodoList")
+                        .child("MyGroups")
+                        .child(uID)
+                        .child(String.valueOf(group.getId()))
                         .removeValue();
 
 

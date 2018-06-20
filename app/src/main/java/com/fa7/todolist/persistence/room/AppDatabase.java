@@ -10,4 +10,5 @@ import com.fa7.todolist.model.GroupCollaborator;
 
 @Database(entities = {Activity.class, Group.class, Collaborator.class, GroupCollaborator.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
+    public abstract GroupDAO groupDAO();
 }
