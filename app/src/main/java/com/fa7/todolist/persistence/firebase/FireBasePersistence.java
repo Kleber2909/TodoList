@@ -4,12 +4,19 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.fa7.todolist.control.GroupControl;
 import com.fa7.todolist.model.Group;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FireBasePersistence extends AppCompatActivity {
 
@@ -25,7 +32,7 @@ public class FireBasePersistence extends AppCompatActivity {
     private void GetDataBaseReference() {
         try {
             FirebaseAuth.getInstance()
-                    .signInWithEmailAndPassword("a@a.com.br", "123456")
+                    .signInWithEmailAndPassword("b@b.com.br", "123456")
                     .addOnSuccessListener(
                             new OnSuccessListener<AuthResult>() {
                                 @Override
@@ -43,7 +50,7 @@ public class FireBasePersistence extends AppCompatActivity {
         }
     }
 
-    public void DataGroupOnFirebase(final Group group, final Boolean add) {
+    public void GroupOnFirebase(final Group group, final Boolean add) {
         try {
             if (add) {
                 databaseReference
@@ -64,7 +71,7 @@ public class FireBasePersistence extends AppCompatActivity {
         }
     }
 
-    public void DataMyGroupOnFirebase(final Group group, final Boolean add) {
+    public void MyGroupOnFirebase(final Group group, final Boolean add) {
         try {
             if (add) {
                 databaseReference
@@ -87,20 +94,63 @@ public class FireBasePersistence extends AppCompatActivity {
         }
     }
 
-    public String GetNewKey() {
-        String retorno = "";
+    public void GetGroupOfFirebase() {
         try {
-
-            retorno = databaseReference
+            databaseReference
                     .child("TodoList")
+                    .child("MyGroups")
                     .child(uID)
-                    .push()
-                    .getKey();
-
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            final List<Group> groupList = new ArrayList<Group>();
+                            try {
+                                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                    Group g = child.getValue(Group.class);
+                                    groupList.add(g);
+                                }
+                               if(groupList.size() > 0)
+                                   GroupControl.GetMyGroups(groupList);
+                            } catch (Exception e) {
+                                Log.e("onDataChange", "GetGroupOfFirebasee" + e.getMessage());
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e("onCancelled", "GetGroupOfFirebasee" + databaseError.getMessage());
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e("GetGroupOfFirebase", e.getMessage());
         }
-        catch (Exception e){
-            Log.e("DataOnFirebase", e.getMessage());
-        }
-        return retorno;
     }
+
+    public void GetActivitysOfFirebase(final Group group) {
+        try {
+            databaseReference
+                    .child("TodoList")
+                    .child("Groups")
+                    .child(String.valueOf(group.getId()))
+                    //.equalTo(String.valueOf(group.getId()))
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            try {
+                                if(dataSnapshot.exists()) {
+                                    GroupControl.UpdateSqLite(dataSnapshot.getValue(Group.class));
+                                }
+                            } catch (Exception e) {
+                                Log.e("onDataChange", "GetActivitysOfFirebase" + e.getMessage());
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e("onCancelled", "GetActivitysOfFirebase" + databaseError.getMessage());
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e("GetActivitysOfFirebase", e.getMessage());
+        }
+    }
+
 }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.fa7.todolist.R;
+import com.fa7.todolist.control.GroupControl;
 import com.fa7.todolist.model.Activity;
 import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     EditText id;
     static EditText grupo;
     static FireBasePersistence fireBasePersistence;
+    static GroupControl groupControl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         id = findViewById(R.id.editText);
         grupo = findViewById(R.id.editText2);
         fireBasePersistence = new FireBasePersistence(getApplicationContext());
+        groupControl = new GroupControl(getApplicationContext());
 
     }
 
@@ -51,10 +55,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                AppDatabase appDatabase = MainDatabase.getInstance(context);
+
+                //AppDatabase appDatabase = MainDatabase.getInstance(context);
+
+
+                //groupControl.JoinExistingGroup(Long.valueOf("1529460213908"));
+                //groupControl.JoinExistingGroup(Long.valueOf("1529460213000"));
+                  groupControl.GetSynchronizeFirebase();
+
+                /*
                 List<Group> groupList = appDatabase.groupDAO().getAll();
 
-                Group grup = new Group(grupo.getText().toString());
+                Group grup = new Group(Long.valueOf("1529460213908"));
                 appDatabase.groupDAO().insertAll(grup);
                 fireBasePersistence.DataMyGroupOnFirebase(grup, true);
 
@@ -89,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
                 fireBasePersistence.DataGroupOnFirebase(grup, true);
 
-
+*/
                 int a =0;
             }
             catch (Exception e){

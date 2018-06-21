@@ -21,11 +21,24 @@ public class Group {
     @Ignore
     private List<Activity> activityList;
 
+    public Group() {
+    }
 
     @Ignore
     public Group(String nomeGrupo) {
         this.id = new Date().getTime();
         this.nomeGrupo = nomeGrupo;
+    }
+
+    @Ignore
+    public Group(long id, String nomeGrupo) {
+        this.id = id;
+        this.nomeGrupo = nomeGrupo;
+    }
+
+    @Ignore
+    public Group(long id) {
+        this.id = id;
     }
 
     @Ignore
@@ -36,8 +49,14 @@ public class Group {
         this.activityList = activityList;
     }
 
-    public Group() {
+    @Ignore
+    public Group(long id, String nomeGrupo, List<Collaborator> collaboratorList, List<Activity> activityList) {
+        this.id = id;
+        this.nomeGrupo = nomeGrupo;
+        this.collaboratorList = collaboratorList;
+        this.activityList = activityList;
     }
+
 
     @Override
     public String toString() {
