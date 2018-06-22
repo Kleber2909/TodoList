@@ -15,21 +15,27 @@ public interface GroupCollaboratorDAO {
     @Query("SELECT * FROM 'GroupCollaborator'")
     List<GroupCollaborator> getAll();
 
-    @Query("SELECT * FROM 'GroupCollaborator' WHERE id IN (:groupCollaboratorId)")
-    List<GroupCollaborator> loadAllByIds(int[] groupCollaboratorId);
+    @Query("SELECT * FROM 'GroupCollaborator' WHERE id IN (:groupCollaboratorIds)")
+    List<GroupCollaborator> loadAllByIds(int[] groupCollaboratorIds);
 
-    @Query("SELECT * FROM 'GroupCollaborator' WHERE id IN (:id)")
-    GroupCollaborator getCollaborator(int id);
+    @Query("SELECT * FROM 'GroupCollaborator' WHERE idColaborador IN (:idCollaborator)")
+    List<GroupCollaborator> getAllByCollaborator(int idCollaborator);
 
-    @Query("SELECT * FROM 'GroupCollaborator' WHERE idColaborador LIKE :title LIMIT 1")
-    GroupCollaborator findByName(String title);
+    @Query("SELECT * FROM 'GroupCollaborator' WHERE idColaborador IN (:idGroup)")
+    List<GroupCollaborator> getAllByGroup(int idGroup);
+
+    @Query("DELETE FROM 'GroupCollaborator' WHERE idColaborador in (:idCollaborator)")
+    void deleteByCollaborator(int idCollaborator);
+
+    @Query("DELETE FROM 'GroupCollaborator' WHERE idColaborador in (:idGroup)")
+    void deleteByGroup(int idGroup);
+
+    @Query("DELETE FROM 'GroupCollaborator'")
+    void deleteAll();
 
     @Insert
     void insertAll(GroupCollaborator... groupCollaborator);
 
     @Delete
     void delete(GroupCollaborator groupCollaborator);
-
-    @Query("DELETE FROM 'GroupCollaborator'")
-    void deleteAll();
 }

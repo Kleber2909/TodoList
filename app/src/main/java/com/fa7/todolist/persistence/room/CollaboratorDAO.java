@@ -27,6 +27,9 @@ public interface CollaboratorDAO {
     @Insert
     void insertAll(Collaborator... collaborator);
 
+    @Insert
+    void insert(Collaborator collaborator);
+
     @Delete
     void delete(Collaborator collaborator);
 
