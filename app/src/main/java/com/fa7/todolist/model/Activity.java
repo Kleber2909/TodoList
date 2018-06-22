@@ -11,9 +11,7 @@ import java.util.Date;
 public class Activity {
 
     @PrimaryKey
-    private int id;
-    @ColumnInfo(name = "idAtividade")
-    private String idAtividade;
+    private long id;
     @ColumnInfo(name = "idGrupo")
     private String idGrupo;
     @ColumnInfo(name = "titulo")
@@ -28,8 +26,8 @@ public class Activity {
     private String status;
 
     @Ignore
-    public Activity(String idAtividade, String idGrupo, String titulo, String descricao, String data, String prioridade, String status){
-        this.id = id;
+    public Activity(String idGrupo, String titulo, String descricao, String data, String prioridade, String status){
+        this.id = new Date().getTime();
         this.idGrupo = idGrupo;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -47,20 +45,12 @@ public class Activity {
         return this.descricao;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
-    }
-
-    public String getIdAtividade() {
-        return idAtividade;
-    }
-
-    public void setIdAtividade(String idAtividade) {
-        this.idAtividade = idAtividade;
     }
 
     public String getIdGrupo() {

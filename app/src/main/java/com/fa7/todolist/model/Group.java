@@ -5,44 +5,70 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
 @Entity
 public class Group {
 
     @PrimaryKey
-    private int id;
-    @ColumnInfo(name = "idGrupo")
-    private String idGrupo;
+    private long id;
     @ColumnInfo(name = "nomeGrupo")
     private String nomeGrupo;
-
     @Ignore
-    public Group(String idGrupo, String nomeGrupo) {
-        this.idGrupo = idGrupo;
-        this.nomeGrupo = nomeGrupo;
-    }
+    private List<Collaborator> collaboratorList;
+    @Ignore
+    private List<Activity> activityList;
 
     public Group() {
     }
+
+    @Ignore
+    public Group(String nomeGrupo) {
+        this.id = new Date().getTime();
+        this.nomeGrupo = nomeGrupo;
+    }
+
+    @Ignore
+    public Group(long id, String nomeGrupo) {
+        this.id = id;
+        this.nomeGrupo = nomeGrupo;
+    }
+
+    @Ignore
+    public Group(long id) {
+        this.id = id;
+    }
+
+    @Ignore
+    public Group(String nomeGrupo, List<Collaborator> collaboratorList, List<Activity> activityList) {
+        this.id = new Date().getTime();
+        this.nomeGrupo = nomeGrupo;
+        this.collaboratorList = collaboratorList;
+        this.activityList = activityList;
+    }
+
+    @Ignore
+    public Group(long id, String nomeGrupo, List<Collaborator> collaboratorList, List<Activity> activityList) {
+        this.id = id;
+        this.nomeGrupo = nomeGrupo;
+        this.collaboratorList = collaboratorList;
+        this.activityList = activityList;
+    }
+
 
     @Override
     public String toString() {
         return this.nomeGrupo;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
-    }
-
-    public String getIdGrupo() {
-        return idGrupo;
-    }
-
-    public void setIdGrupo(String idGrupo) {
-        this.idGrupo = idGrupo;
     }
 
     public String getNomeGrupo() {
@@ -51,5 +77,21 @@ public class Group {
 
     public void setNomeGrupo(String nomeGrupo) {
         this.nomeGrupo = nomeGrupo;
+    }
+
+    public List<Collaborator> getCollaboratorList() {
+        return collaboratorList;
+    }
+
+    public void setCollaboratorList(List<Collaborator> collaboratorList) {
+        this.collaboratorList = collaboratorList;
+    }
+
+    public List<Activity> getActivityList() {
+        return activityList;
+    }
+
+    public void setActivityList(List<Activity> activityList) {
+        this.activityList = activityList;
     }
 }

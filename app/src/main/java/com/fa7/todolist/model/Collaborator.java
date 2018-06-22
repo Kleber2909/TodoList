@@ -4,22 +4,22 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity
 public class Collaborator {
 
+    @NonNull
     @PrimaryKey
-    private int id;
-    @ColumnInfo(name = "idColaborador")
-    private String idColaborador;
+    private String id;
     @ColumnInfo(name = "nomeColaborador")
     private String nomeColaborador;
     @ColumnInfo(name = "email")
     private String email;
 
     @Ignore
-    public Collaborator(String idColaborador, String nomeColaborador, String email) {
-        this.idColaborador = idColaborador;
+    public Collaborator(String id, String nomeColaborador, String email) {
+        this.id = id;
         this.nomeColaborador = nomeColaborador;
         this.email = email;
     }
@@ -32,20 +32,12 @@ public class Collaborator {
         return this.nomeColaborador;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getIdColaborador() {
-        return idColaborador;
-    }
-
-    public void setIdColaborador(String idColaborador) {
-        this.idColaborador = idColaborador;
     }
 
     public String getNomeColaborador() {
