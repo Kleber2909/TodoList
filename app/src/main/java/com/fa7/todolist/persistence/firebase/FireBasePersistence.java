@@ -32,7 +32,7 @@ public class FireBasePersistence extends AppCompatActivity {
     private void GetDataBaseReference() {
         try {
             FirebaseAuth.getInstance()
-                    .signInWithEmailAndPassword("b@b.com.br", "123456")
+                    .signInWithEmailAndPassword("c@c.com.br", "123456")
                     .addOnSuccessListener(
                             new OnSuccessListener<AuthResult>() {
                                 @Override
