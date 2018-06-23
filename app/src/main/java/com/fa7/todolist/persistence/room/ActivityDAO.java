@@ -16,15 +16,15 @@ public interface ActivityDAO {
     List<Activity> loadAllByIds(int[] activityId);
 
     @Query("SELECT * FROM Activity WHERE id IN (:id)")
-    Activity getActivity(int id);
+    Activity getActivity(long id);
 
     @Query("SELECT * FROM Activity WHERE titulo LIKE :title LIMIT 1")
     Activity findByName(String title);
 
-    @Query("SELECT * FROM Activity WHERE idGrupo IN :idGroup")
-    List<Activity> getActivityByGroup(int idGroup);
+    @Query("SELECT * FROM Activity WHERE idGrupo = :idGroup")
+    List<Activity> getActivityByGroup(long idGroup);
 
-    @Query("SELECT * FROM Activity WHERE idGrupo IN :status")
+    @Query("SELECT * FROM Activity WHERE status = :status")
     List<Activity> getActivityByStatus(int status);
 
     @Insert
