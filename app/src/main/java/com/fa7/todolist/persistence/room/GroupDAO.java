@@ -15,6 +15,9 @@ public interface GroupDAO {
     @Query("SELECT * FROM 'Group'")
     List<Group> getAll();
 
+    @Query("SELECT nomeGrupo FROM 'Group'")
+    List<String> getAllGroupName();
+
     @Query("SELECT * FROM 'Group' WHERE id IN (:groupId)")
     List<Group> loadAllByIds(int[] groupId);
 

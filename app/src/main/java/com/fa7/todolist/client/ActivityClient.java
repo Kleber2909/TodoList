@@ -66,7 +66,7 @@ public class ActivityClient extends ClientBase {
         return null;
     }
 
-    public void insertAll(List<Activity> activities) {
+    public void insertAll(Activity... activities) {
         try {
             db.getActivity().insertAll(activities);
         } catch (Exception e) {
