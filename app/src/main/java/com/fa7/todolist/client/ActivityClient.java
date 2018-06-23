@@ -48,7 +48,7 @@ public class ActivityClient extends ClientBase {
         return null;
     }
 
-    public List<Activity> getActivityByGroup(int idGroup) {
+    public List<Activity> getActivityByGroup(long idGroup) {
         try {
             return db.getActivity().getActivityByGroup(idGroup);
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class ActivityClient extends ClientBase {
         return null;
     }
 
-    public List<Activity> getActivityByStatus(int status) {
+    public List<Activity> getActivityByStatus(String status) {
         try {
             return db.getActivity().getActivityByStatus(status);
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class ActivityClient extends ClientBase {
         return null;
     }
 
-    public void insertAll(Activity... activities) {
+    public void insertAll(List<Activity> activities) {
         try {
             db.getActivity().insertAll(activities);
         } catch (Exception e) {

@@ -36,7 +36,7 @@ public class CollaboratorClient extends ClientBase {
     }
 
 
-    public Collaborator getCollaborator(int id) {
+    public Collaborator getCollaborator(String id) {
         try {
             return db.getCollaborator().getCollaborator(id);
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class CollaboratorClient extends ClientBase {
         return null;
     }
 
-
+/*
     public void insertAll(Collaborator... collaborators) {
         try {
             db.getCollaborator().insertAll(collaborators);
@@ -65,7 +65,7 @@ public class CollaboratorClient extends ClientBase {
             setMessage(e);
         }
     }
-
+*/
 
     public void insert(Collaborator collaborator) {
         try {

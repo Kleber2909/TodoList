@@ -4,6 +4,8 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+
 import com.fa7.todolist.model.Activity;
 import java.util.List;
 
@@ -25,16 +27,20 @@ public interface ActivityDAO {
     List<Activity> getActivityByGroup(long idGroup);
 
     @Query("SELECT * FROM Activity WHERE status = :status")
-    List<Activity> getActivityByStatus(int status);
+
+    List<Activity> getActivityByStatus(String status);
 
     @Insert
-    void insertAll(Activity... activity);
+    void insertAll(List<Activity> activity);
 
     @Insert
     void insert(Activity activity);
 
     @Delete
     void delete(Activity activity);
+
+    @Update
+    void update(Activity activity);
 
     @Query("DELETE FROM Activity")
     void deleteAll();

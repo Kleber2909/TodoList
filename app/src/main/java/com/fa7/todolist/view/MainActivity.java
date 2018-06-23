@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 //AppDatabase appDatabase = MainDatabase.getInstance(context);
 
 
-                //groupControl.JoinExistingGroup(Long.valueOf("1529460213908"));
+                //groupControl.JoinExistingGroup(Long.valueOf("1529460213972"));
                 //groupControl.JoinExistingGroup(Long.valueOf("1529460213000"));
                   groupControl.GetSynchronizeFirebase();
 

@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import com.fa7.todolist.model.Collaborator;
 
@@ -19,16 +20,19 @@ public interface CollaboratorDAO {
     List<Collaborator> loadAllByIds(int[] collaboratorId);
 
     @Query("SELECT * FROM 'Collaborator' WHERE id IN (:id)")
-    Collaborator getCollaborator(int id);
+    Collaborator getCollaborator(String id);
 
     @Query("SELECT * FROM 'Collaborator' WHERE nomeColaborador LIKE :title LIMIT 1")
     Collaborator findByName(String title);
 
     @Insert
-    void insertAll(Collaborator... collaborator);
+    void insertAll(List<Collaborator> collaborator);
 
     @Insert
     void insert(Collaborator collaborator);
+
+    @Update
+    void update(Collaborator collaborator);
 
     @Delete
     void delete(Collaborator collaborator);
