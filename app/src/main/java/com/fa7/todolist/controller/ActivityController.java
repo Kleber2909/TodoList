@@ -9,6 +9,7 @@ import com.fa7.todolist.model.Activity;
 import com.fa7.todolist.model.Group;
 import com.fa7.todolist.persistence.firebase.FireBasePersistence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityController extends ControllerBase {
@@ -25,17 +26,35 @@ public class ActivityController extends ControllerBase {
     }
 
     // Chamar esse método para entrar em grupo já existente
-    public void AddNewActivity(Activity activity){
+    public boolean AddNewActivity(Activity activity){
         try {
             if(activity != null) {
+                if(activity.getIdGrupo().equals("")) {
+                    Log.i("Erro: AddNewActivity", "Selecione o grupo.");
+                    return false;
+                }
+
+                if (activity.getTitulo().equals("")) {
+                    Log.i("Erro: AddNewActivity", "Selecione o grupo.");
+                    return false;
+                }
+
+                if(activity.getData().equals("")){
+                    Log.i("Erro: AddNewActivity", "Selecione o grupo.");
+                    return false;
+                }
+
                 client.insert(activity);
+                return true;
             } else {
                 Log.i("Erro: AddNewActivity", "Atividade nula.");
+                return false;
             }
 
         } catch (Exception ex) {
             Log.i("Erro: AddNewActivity", ex.getMessage());
         }
+        return false;
     }
 
     public void RemoveActivity(long activityId){
@@ -45,6 +64,14 @@ public class ActivityController extends ControllerBase {
         } catch (Exception ex) {
             Log.i("Erro: AddNewActivity", ex.getMessage());
         }
+    }
+
+    public List<String> ListaPrioridades() {
+        List<String> priorits = new ArrayList<String>();
+        priorits.add("Alta");
+        priorits.add("Média");
+        priorits.add("Baixa");
+        return priorits;
     }
 
 
