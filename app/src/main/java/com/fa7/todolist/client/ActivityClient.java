@@ -12,7 +12,7 @@ public class ActivityClient extends ClientBase {
         db = AppDatabase.getInstance(context);
     }
 
-    public Activity getActivity(int id) {
+    public Activity getActivity(long id) {
         try {
             return db.getActivity().getActivity(id);
         } catch (Exception e) {

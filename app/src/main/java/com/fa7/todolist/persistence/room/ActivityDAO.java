@@ -27,6 +27,7 @@ public interface ActivityDAO {
     List<Activity> getActivityByGroup(long idGroup);
 
     @Query("SELECT * FROM Activity WHERE status = :status")
+
     List<Activity> getActivityByStatus(String status);
 
     @Insert
