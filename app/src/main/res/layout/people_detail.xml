@@ -24,14 +24,4 @@
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_save"
-        android:tint="#ffffff"
-        android:backgroundTint="@color/floatinSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:src="@mipmap/ic_save"
-        android:layout_margin="16dp" />
-
 </FrameLayout>
