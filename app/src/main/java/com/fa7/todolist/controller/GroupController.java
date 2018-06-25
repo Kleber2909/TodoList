@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.fa7.todolist.client.GroupClient;
 import com.fa7.todolist.model.Activity;
 import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
@@ -21,17 +22,19 @@ public class GroupController  {
     Context context;
     static FireBasePersistence fireBasePersistence;
     static AppDatabase appDatabase;
+    static GroupClient client;
 
 
     public GroupController(Context context) {
         this.context = context;
         fireBasePersistence = new FireBasePersistence(context);
         appDatabase = MainDatabase.getInstance(context);
+        client = new GroupClient(context);
     }
 
     // Chamar esse método para entrar em grupo já existente
-    public void JoinExistingGroup(long id) {
-        fireBasePersistence.MyGroupOnFirebase(new Group(id), true);
+    public void JoinExistingGroup(long id, boolean action) {
+        fireBasePersistence.MyGroupOnFirebase(new Group(id), action);
     }
 
     // Chamar esse método para sincronizar os grupos de atividades do Firebase com o SqLite
@@ -57,6 +60,32 @@ public class GroupController  {
 
     public List<Group> GetAllGroup(){
         return appDatabase.getGroup().getAll();
+    }
+
+    public List<String> GetAllGroupName(){
+        return appDatabase.getGroup().getAllGroupName();
+    }
+
+    public boolean AddNewGroup(Group group) {
+        try {
+            if(group != null) {
+                if(group.getNomeGrupo().equals("")) {
+                    Log.i("Erro: AddNewGroup", "Informe o nome do grupo.");
+                    return false;
+                }
+
+                client.insert(group);
+                JoinExistingGroup(Long.parseLong("1529891054362"), false);
+                return true;
+            } else {
+                Log.i("Erro: AddNewActivity", "Atividade nula.");
+                return false;
+            }
+
+        } catch (Exception ex) {
+            Log.i("Erro: AddNewActivity", ex.getMessage());
+        }
+        return false;
     }
 
     private static class firebaseAsyncTask extends AsyncTask<Void, Void, Void> {

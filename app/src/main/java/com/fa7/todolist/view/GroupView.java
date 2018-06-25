@@ -7,11 +7,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -23,18 +26,20 @@ import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.fa7.todolist.R;
 import com.fa7.todolist.controller.GroupController;
 import com.fa7.todolist.model.Group;
+import com.fa7.todolist.utils.SnackbarMessage;
 
 import java.util.List;
 
 public class GroupView extends AppCompatActivity {
 
-    private GroupController groupController;
+    private static GroupController groupController;
     public static LinearLayout lay_group;
     private FloatingActionButton btn_add;
     private SwipeMenuCreator creator;
     private SwipeMenuListView mListView;
     private ListView listViewGroups;
     private static List<Group> groupList;
+    static AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +52,7 @@ public class GroupView extends AppCompatActivity {
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SaveGroup();
+                ShowViewAddGroup();
             }
         });
     }
@@ -58,9 +63,6 @@ public class GroupView extends AppCompatActivity {
             btn_add = (FloatingActionButton) findViewById(R.id.btn_add);
             mListView = (SwipeMenuListView) findViewById(R.id.listGroups);
             listViewGroups = (ListView) findViewById(R.id.listGroups);
-            groupController = new GroupController(getApplicationContext());
-            new GetAllGroup(getBaseContext()).execute();
-
             listViewGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -68,6 +70,10 @@ public class GroupView extends AppCompatActivity {
 
                 }
             });
+
+            groupController = new GroupController(this);
+            groupController.GetSynchronizeFirebase();
+            new GetAllGroup(getBaseContext()).execute();
         }
         catch (Exception e)
         {
@@ -76,8 +82,35 @@ public class GroupView extends AppCompatActivity {
 
     }
 
-    private void SaveGroup() {
+    private void ShowViewAddGroup() {
+        LayoutInflater li = getLayoutInflater();
+        View view = li.inflate(R.layout.my_groups_add, null);
+        final EditText edt_groupname = (EditText) view.findViewById(R.id.edt_groupname);
+        view.findViewById(R.id.btn_add).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                try {
+                    String nome = edt_groupname.getText().toString();
 
+                    if (nome.equals("")) {
+                        SnackbarMessage.setProgressMessage(lay_group, false, ": Selecione o grupo.");
+                        return;
+                    }
+
+                    Group activity = new Group(nome);
+                    new SaveGroup(getApplicationContext(), activity).execute();
+
+                    alertDialog.dismiss();
+                } catch (Exception e) {
+                    SnackbarMessage.setProgressMessage(lay_group, false, e.getMessage());
+                }
+            }
+        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view);
+        builder.setTitle("Adicionar grupo");
+        alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void  CreatorSwipeMenuCreator() {
@@ -187,5 +220,34 @@ public class GroupView extends AppCompatActivity {
             // Progresso.
         }
 
+    }
+
+    private static class SaveGroup extends AsyncTask<Group, Void, Boolean> {
+        Context context;
+        Group group;
+        boolean progress;
+
+        public SaveGroup(Context context, Group group){
+            this.context = context;
+            this.group = group;
+        }
+
+        @Override
+        protected Boolean doInBackground(Group... params) {
+            try {
+                progress = groupController.AddNewGroup(group);
+            }
+            catch (Exception e){
+                Log.e("Erro", e.getMessage());
+            }
+
+            return progress;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean progress) {
+            super.onPostExecute(progress);
+            SnackbarMessage.setProgressMessage(lay_group, progress, " ao Adicionar Grupo.");
+        }
     }
 }

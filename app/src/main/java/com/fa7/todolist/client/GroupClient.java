@@ -30,7 +30,7 @@ public class GroupClient extends ClientBase {
         return null;
     }
 
-    public Group getGroup(int id) {
+    public Group getGroup(long id) {
         try {
             db.getGroup().getGroup(id);
         } catch (Exception e) {
@@ -51,6 +51,22 @@ public class GroupClient extends ClientBase {
     public void insertAll(Group... groups) {
         try {
             db.getGroup().insertAll(groups);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
+    public void insert(Group group) {
+        try {
+            db.getGroup().insert(group);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
+    public void update(Group group) {
+        try {
+            db.getGroup().update(group);
         } catch (Exception e) {
             setMessage(e);
         }

@@ -134,9 +134,9 @@ public class FireBasePersistence extends AppCompatActivity {
         }
     }
 
-    public void MyGroupOnFirebase(final Group group, final Boolean add) {
+    public void MyGroupOnFirebase(final Group group, final Boolean action) {
         try {
-            if (add) {
+            if (action) {
                 databaseReference
                         .child("TodoList")
                         .child("MyGroups")
