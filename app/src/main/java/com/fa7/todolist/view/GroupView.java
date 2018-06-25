@@ -1,6 +1,7 @@
 package com.fa7.todolist.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -27,7 +28,7 @@ import java.util.List;
 
 public class GroupView extends AppCompatActivity {
 
-    private static GroupController groupController;
+    private GroupController groupController;
     public static LinearLayout lay_group;
     private FloatingActionButton btn_add;
     private SwipeMenuCreator creator;
@@ -46,7 +47,7 @@ public class GroupView extends AppCompatActivity {
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SaveActivity();
+                SaveGroup();
             }
         });
     }
@@ -57,9 +58,7 @@ public class GroupView extends AppCompatActivity {
             btn_add = (FloatingActionButton) findViewById(R.id.btn_add);
             mListView = (SwipeMenuListView) findViewById(R.id.listGroups);
             listViewGroups = (ListView) findViewById(R.id.listGroups);
-
             groupController = new GroupController(getApplicationContext());
-            groupController.GetSynchronizeFirebase();
             new GetAllGroup(getBaseContext()).execute();
 
             listViewGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,7 +76,7 @@ public class GroupView extends AppCompatActivity {
 
     }
 
-    private void SaveActivity() {
+    private void SaveGroup() {
 
     }
 
@@ -89,32 +88,31 @@ public class GroupView extends AppCompatActivity {
             public void create(SwipeMenu menu) {
 
                 SwipeMenuItem item1 = new SwipeMenuItem(getApplicationContext());
-                item1.setBackground(new ColorDrawable(Color.rgb(68, 216, 113)));
-                item1.setWidth(90);
-                item1.setTitle("Pagar");
-                item1.setTitleSize(10);
-                item1.setTitleColor(Color.BLACK);
-                item1.setIcon(R.mipmap.ic_launcher);
+               // item1.setBackground(new ColorDrawable(Color.rgb(68, 216, 113)));
+                item1.setWidth(100);
+//                item1.setTitle("Compartilhar");
+//                item1.setTitleSize(10);
+//                item1.setTitleColor(Color.BLACK);
+                item1.setIcon(R.mipmap.ic_share);
                 menu.addMenuItem(item1);
 
-                SwipeMenuItem item3 = new SwipeMenuItem(getApplicationContext());
-                item3.setBackground(new ColorDrawable(Color.rgb(86, 178, 232)));
-                item3.setWidth(90);
-                item3.setTitle("Editar");
-                item3.setTitleSize(10);
-                item3.setTitleColor(Color.BLACK);
-                item3.setIcon(R.mipmap.ic_save);
-                menu.addMenuItem(item3);
-
                 SwipeMenuItem item2 = new SwipeMenuItem(getApplicationContext());
-                item2.setBackground(new ColorDrawable(Color.rgb(212, 32, 32)));
-                item2.setWidth(90);
-                item2.setTitle("Excluir");
-                item2.setTitleSize(10);
-                item2.setTitleColor(Color.BLACK);
-                item2.setIcon(R.mipmap.ic_data);
-
+               // item2.setBackground(new ColorDrawable(Color.rgb(86, 178, 232)));
+                item2.setWidth(100);
+//                item2.setTitle("Editar");
+//                item2.setTitleSize(10);
+//                item2.setTitleColor(Color.BLACK);
+                item2.setIcon(R.mipmap.ic_edit);
                 menu.addMenuItem(item2);
+
+                SwipeMenuItem item3 = new SwipeMenuItem(getApplicationContext());
+              //  item3.setBackground(new ColorDrawable(Color.rgb(212, 32, 32)));
+                item3.setWidth(100);
+//                item3.setTitle("Excluir");
+//                item3.setTitleSize(10);
+//                item3.setTitleColor(Color.BLACK);
+                item3.setIcon(R.mipmap.ic_delete);
+                menu.addMenuItem(item3);
             }
         };
 
@@ -129,6 +127,14 @@ public class GroupView extends AppCompatActivity {
                     case 0:
                         // Recupera o grupo selecionado
                         nome = groupList.get(position).getNomeGrupo();
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        String shareBody = "Olá! "+
+                                "Você foi convidado para entrar no grupo de atividades " +
+                                nome + ". Use o código " + groupList.get(position).getId() + " para entrar!";
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Convite para grupo de atividades");
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                        startActivity(Intent.createChooser(sharingIntent, "Compartilhar via"));
                         Toast.makeText(getBaseContext(), "1 - Grupo " + nome, Toast.LENGTH_LONG).show();
                         break;
 

@@ -31,6 +31,11 @@
         android:src="@mipmap/ic_save"
         android:layout_margin="16dp" />
 
-
+    <!--<item-->
+        <!--android:id="@+id/menu_item_share"-->
+        <!--android:showAsAction="ifRoom"-->
+        <!--android:title="Share"-->
+        <!--android:actionProviderClass=-->
+            <!--"android.widget.ShareActionProvider" />-->
 
 </FrameLayout>

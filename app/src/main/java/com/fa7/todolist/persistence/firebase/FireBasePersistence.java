@@ -43,7 +43,7 @@ public class FireBasePersistence extends AppCompatActivity {
     private void GetDataBaseReference() {
         try {
             FirebaseAuth.getInstance()
-                    .signInWithEmailAndPassword("c@c.com.br", "123456")
+                    .signInWithEmailAndPassword("a@a.com.br", "123456")
                     .addOnSuccessListener(
                             new OnSuccessListener<AuthResult>() {
                                 @Override
@@ -53,6 +53,8 @@ public class FireBasePersistence extends AppCompatActivity {
 
                                     final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                                     databaseReference = firebaseDatabase.getReference();
+                                    GetGroupOfFirebase();
+                                    // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
                                 }
                             });
         }
@@ -75,6 +77,7 @@ public class FireBasePersistence extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("AuthWithGoogle", "signInWithCredential:success");
                             uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            GetGroupOfFirebase();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("AuthWithGoogle", "signInWithCredential:failure", task.getException());
@@ -99,6 +102,7 @@ public class FireBasePersistence extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("FacebookAccessToken", "signInWithCredential:success");
                             uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            GetGroupOfFirebase();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("FacebookAccessToken", "signInWithCredential:failure", task.getException());
@@ -159,7 +163,8 @@ public class FireBasePersistence extends AppCompatActivity {
                     .child("TodoList")
                     .child("MyGroups")
                     .child(uID)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                    .addValueEventListener(new ValueEventListener() {
+                    //.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             final List<Group> groupList = new ArrayList<Group>();
