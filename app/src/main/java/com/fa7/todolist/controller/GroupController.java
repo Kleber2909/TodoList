@@ -29,14 +29,6 @@ public class GroupController  {
         appDatabase = MainDatabase.getInstance(context);
     }
 
-    public List<String> getAll() {
-        List<String> s = new ArrayList<String>();
-        s.add("Item 1");
-        s.add("Item 2");
-        s.add("Item 3");
-        return s;
-    }
-
     // Chamar esse método para entrar em grupo já existente
     public void JoinExistingGroup(long id) {
         fireBasePersistence.MyGroupOnFirebase(new Group(id), true);

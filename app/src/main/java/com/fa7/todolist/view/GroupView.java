@@ -116,7 +116,6 @@ public class GroupView extends AppCompatActivity {
             }
         };
 
-int x =1;
         mListView.setMenuCreator(creator);
 
         mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
