@@ -58,7 +58,7 @@ public class ActivityView extends AppCompatActivity {
         rbg_status = (RadioGroup) findViewById(R.id.rbg_status);
         rb_pending = (RadioButton) findViewById(R.id.rb_pending);
         rb_sucess = (RadioButton) findViewById(R.id.rb_sucess);
-        btn_save = (FloatingActionButton) findViewById(R.id.btn_save);
+        //btn_save = (FloatingActionButton) findViewById(R.id.btn_save);
 
         activityController = new ActivityController(this);
         groupController = new GroupController(this);
