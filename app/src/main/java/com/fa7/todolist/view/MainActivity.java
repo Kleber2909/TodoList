@@ -9,8 +9,14 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.fa7.todolist.R;
+import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.controller.GroupController;
+import com.fa7.todolist.model.Activity;
+import com.fa7.todolist.model.Collaborator;
+import com.fa7.todolist.persistence.File.FileData;
 import com.fa7.todolist.persistence.firebase.FireBasePersistence;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,10 +56,17 @@ public class MainActivity extends AppCompatActivity {
 
                 //groupControl.JoinExistingGroup(Long.valueOf("1529460213972"));
                 //groupControl.JoinExistingGroup(Long.valueOf("1529460213000"));
-                groupControl.GetSynchronizeFirebase();
+//                groupControl.GetSynchronizeFirebase();
                 //groupControl.SincFirebase();
                 //new CopiaBanco().CopiaBancoParaSD(context);
 
+                //new FileData().saveText(context, "TodoListUserLocal", "gOm0i5RDgXQgXiLOAhj273VTdAc2|Kleber Cavalcante|kleber@teste.com.br");
+
+                //Activity activity = new Activity("1529460213908", "Reunião projeto", "Realizar alinhamento das atividades de implantação", "20/06/2018", "Normal", "Pendente");
+
+               // Collaborator collaborator = new CollaboratorController(context).GetUserLocal();
+                //fireBasePersistence.ActivityOnFirebase(activity, collaborator, true);
+                //fireBasePersistence.GetGroupOfFirebase();
                 /*
                 List<Group> groupList = appDatabase.groupDAO().getAll();
 

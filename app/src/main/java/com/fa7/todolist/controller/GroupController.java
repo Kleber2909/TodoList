@@ -75,7 +75,8 @@ public class GroupController  {
                 }
 
                 client.insert(group);
-                JoinExistingGroup(Long.parseLong("1529891054362"), false);
+                fireBasePersistence.GroupOnFirebase(group, true);
+                JoinExistingGroup(group.getId(), true);
                 return true;
             } else {
                 Log.i("Erro: AddNewActivity", "Atividade nula.");

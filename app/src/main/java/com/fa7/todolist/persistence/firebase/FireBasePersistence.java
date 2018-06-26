@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.controller.GroupController;
+import com.fa7.todolist.model.Activity;
+import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
 import com.facebook.AccessToken;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -25,7 +28,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FireBasePersistence extends AppCompatActivity {
 
@@ -131,6 +136,38 @@ public class FireBasePersistence extends AppCompatActivity {
 
         } catch (Exception e) {
             Log.e("DataOnFirebase", e.getMessage());
+        }
+    }
+
+    public void ActivityOnFirebase(final Activity activity, Collaborator collaborator, final Boolean add) {
+        try {
+            if (add) {
+                databaseReference
+                        .child("TodoList")
+                        .child("Groups")
+                        .child(activity.getIdGrupo())
+                        .child("activityList")
+                        .child(String.valueOf(activity.getId()))
+                        .setValue(activity);
+
+                databaseReference
+                        .child("TodoList")
+                        .child("Groups")
+                        .child(activity.getIdGrupo())
+                        .child("collaboratorList")
+                        .child(collaborator.getId())
+                        .setValue(collaborator);
+
+            } else
+                databaseReference
+                        .child("TodoList")
+                        .child("Groups")
+                        .child(activity.getIdGrupo())
+                        .child("activityList")
+                        .child(String.valueOf(activity.getId()))
+                        .removeValue();
+        } catch (Exception e) {
+            Log.e("ActivityOnFirebase", e.getMessage());
         }
     }
 
