@@ -32,6 +32,7 @@ public class ActivityView extends AppCompatActivity {
     public static ActivityController activityController;
     private GroupController groupController;
     private String grupo, prioridade;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class ActivityView extends AppCompatActivity {
 
     private void InitializeSpinners() {
         // groups
-        List<String> groups = groupController.getAll();
+        List<String> groups = groupController.GetAllGroupName();
         ArrayAdapter<String> groupAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, groups);
         cbx_groups.setAdapter(groupAdapter);
         cbx_groups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

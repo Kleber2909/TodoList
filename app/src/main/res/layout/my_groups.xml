@@ -11,11 +11,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_group"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
+        <com.baoyz.swipemenulistview.SwipeMenuListView
+            android:id="@+id/listGroups"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/LinearLayout1"
+            android:layout_alignParentLeft="true"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -23,13 +25,17 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_add"
         android:tint="#ffffff"
-        android:backgroundTint="@color/floatinSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:src="@mipmap/ic_save"
         android:layout_margin="16dp" />
 
-
+    <!--<item-->
+        <!--android:id="@+id/menu_item_share"-->
+        <!--android:showAsAction="ifRoom"-->
+        <!--android:title="Share"-->
+        <!--android:actionProviderClass=-->
+            <!--"android.widget.ShareActionProvider" />-->
 
 </FrameLayout>

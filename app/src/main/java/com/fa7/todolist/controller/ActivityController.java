@@ -1,14 +1,9 @@
 package com.fa7.todolist.controller;
-
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
 import com.fa7.todolist.client.ActivityClient;
 import com.fa7.todolist.model.Activity;
 import com.fa7.todolist.model.Group;
-import com.fa7.todolist.persistence.firebase.FireBasePersistence;
-
 import java.util.ArrayList;
 import java.util.List;
 

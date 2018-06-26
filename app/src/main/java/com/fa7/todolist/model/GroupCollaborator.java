@@ -9,14 +9,14 @@ import android.arch.persistence.room.PrimaryKey;
 public class GroupCollaborator {
 
     @PrimaryKey
-    private int id;
+    private long id;
     @ColumnInfo(name = "idGrupo")
-    private String idGrupo;
+    private long idGrupo;
     @ColumnInfo(name = "idColaborador")
     private String idColaborador;
 
     @Ignore
-    public GroupCollaborator(String idGrupo, String idColaborador) {
+    public GroupCollaborator(long idGrupo, String idColaborador) {
         this.idGrupo = idGrupo;
         this.idColaborador = idColaborador;
     }
@@ -24,19 +24,19 @@ public class GroupCollaborator {
     public GroupCollaborator() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getIdGrupo() {
+    public long getIdGrupo() {
         return idGrupo;
     }
 
-    public void setIdGrupo(String idGrupo) {
+    public void setIdGrupo(long idGrupo) {
         this.idGrupo = idGrupo;
     }
 

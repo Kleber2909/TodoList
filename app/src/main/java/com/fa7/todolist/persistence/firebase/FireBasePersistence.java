@@ -1,14 +1,23 @@
 package com.fa7.todolist.persistence.firebase;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.fa7.todolist.control.GroupControl;
+import com.fa7.todolist.controller.GroupController;
 import com.fa7.todolist.model.Group;
+import com.facebook.AccessToken;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,13 +35,15 @@ public class FireBasePersistence extends AppCompatActivity {
 
     public FireBasePersistence(Context context){
         this.context = context;
+
         GetDataBaseReference();
     }
 
+    // Login E-mail
     private void GetDataBaseReference() {
         try {
             FirebaseAuth.getInstance()
-                    .signInWithEmailAndPassword("c@c.com.br", "123456")
+                    .signInWithEmailAndPassword("a@a.com.br", "123456")
                     .addOnSuccessListener(
                             new OnSuccessListener<AuthResult>() {
                                 @Override
@@ -42,12 +53,64 @@ public class FireBasePersistence extends AppCompatActivity {
 
                                     final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                                     databaseReference = firebaseDatabase.getReference();
+                                    GetGroupOfFirebase();
+                                    // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
                                 }
                             });
         }
         catch (Exception e){
             Log.e("GetDataBaseReference", e.getMessage());
         }
+    }
+
+    // Login Google
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d("AuthWithGoogle", "firebaseAuthWithGoogle:" + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        FirebaseAuth.getInstance()
+                .signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("AuthWithGoogle", "signInWithCredential:success");
+                            uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            GetGroupOfFirebase();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("AuthWithGoogle", "signInWithCredential:failure", task.getException());
+                            Toast.makeText(context, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    // Login Facebook
+    private void handleFacebookAccessToken(AccessToken token) {
+        Log.d("FacebookAccessToken", "handleFacebookAccessToken:" + token);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        FirebaseAuth.getInstance()
+                .signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("FacebookAccessToken", "signInWithCredential:success");
+                            uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            GetGroupOfFirebase();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("FacebookAccessToken", "signInWithCredential:failure", task.getException());
+                            Toast.makeText(context, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     public void GroupOnFirebase(final Group group, final Boolean add) {
@@ -71,9 +134,9 @@ public class FireBasePersistence extends AppCompatActivity {
         }
     }
 
-    public void MyGroupOnFirebase(final Group group, final Boolean add) {
+    public void MyGroupOnFirebase(final Group group, final Boolean action) {
         try {
-            if (add) {
+            if (action) {
                 databaseReference
                         .child("TodoList")
                         .child("MyGroups")
@@ -100,7 +163,8 @@ public class FireBasePersistence extends AppCompatActivity {
                     .child("TodoList")
                     .child("MyGroups")
                     .child(uID)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                    .addValueEventListener(new ValueEventListener() {
+                    //.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             final List<Group> groupList = new ArrayList<Group>();
@@ -110,7 +174,7 @@ public class FireBasePersistence extends AppCompatActivity {
                                     groupList.add(g);
                                 }
                                if(groupList.size() > 0)
-                                   GroupControl.GetMyGroups(groupList);
+                                   GroupController.GetMyGroups(groupList);
                             } catch (Exception e) {
                                 Log.e("onDataChange", "GetGroupOfFirebasee" + e.getMessage());
                             }
@@ -137,7 +201,7 @@ public class FireBasePersistence extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             try {
                                 if(dataSnapshot.exists()) {
-                                    GroupControl.UpdateSqLite(dataSnapshot.getValue(Group.class));
+                                    GroupController.UpdateSqLite(dataSnapshot.getValue(Group.class));
                                 }
                             } catch (Exception e) {
                                 Log.e("onDataChange", "GetActivitysOfFirebase" + e.getMessage());
