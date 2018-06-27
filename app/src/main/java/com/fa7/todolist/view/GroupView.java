@@ -1,9 +1,8 @@
 package com.fa7.todolist.view;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -73,7 +74,7 @@ public class GroupView extends AppCompatActivity {
 
             groupController = new GroupController(this);
             groupController.GetSynchronizeFirebase();
-            new GetAllGroup(getBaseContext()).execute();
+            new UpdateListViewTask(getBaseContext()).execute();
         }
         catch (Exception e)
         {
@@ -84,20 +85,58 @@ public class GroupView extends AppCompatActivity {
 
     private void ShowViewAddGroup() {
         LayoutInflater li = getLayoutInflater();
-        View view = li.inflate(R.layout.my_groups_add, null);
+        final View view = li.inflate(R.layout.my_groups_add_join, null);
+        final TextView txt_desc = (TextView) view.findViewById(R.id.txt_desc);
         final EditText edt_groupname = (EditText) view.findViewById(R.id.edt_groupname);
-        view.findViewById(R.id.btn_add).setOnClickListener(new View.OnClickListener() {
+        final EditText edt_groupname_join = (EditText) view.findViewById(R.id.edt_groupname_join);
+        final Switch choice = (Switch) view.findViewById(R.id.choice);
+        txt_desc.setText("Adicionar Grupo");
+        choice.setChecked(true);
+        choice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(choice.isChecked()) {
+                    view.findViewById(R.id.lay_add).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.lay_join).setVisibility(View.GONE);
+                    txt_desc.setText("Adicionar Grupo");
+                } else {
+                    view.findViewById(R.id.lay_add).setVisibility(View.GONE);
+                    view.findViewById(R.id.lay_join).setVisibility(View.VISIBLE);
+                    txt_desc.setText("Entrar em Grupo existente");
+                }
+            }
+        });
+
+
+        view.findViewById(R.id.btn_add_join).setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 try {
-                    String nome = edt_groupname.getText().toString();
+                    if(choice.isChecked()) {
+                        choice.setTextOn("Adicionar Grupo");
+                        String nome = edt_groupname.getText().toString();
 
-                    if (nome.equals("")) {
-                        SnackbarMessage.setProgressMessage(lay_group, false, ": Selecione o grupo.");
-                        return;
+                        if (nome.equals("")) {
+                            SnackbarMessage.setProgressMessage(lay_group, false, ": Selecione o grupo.");
+                            return;
+                        }
+
+                        Group activity = new Group(nome);
+                        new SaveGroupTask(getApplicationContext(), activity).execute();
+                        new UpdateListViewTask(getApplicationContext()).execute();
+
+                    } else {
+                        choice.setTextOn("Entrar em Grupo existente");
+                        String idGroup = edt_groupname_join.getText().toString();
+
+                        if (idGroup.equals("")) {
+                            SnackbarMessage.setProgressMessage(lay_group, false, ": Informe o código do grupo.");
+                            return;
+                        }
+
+                        Group group = new Group(Long.parseLong(idGroup));
+                        new JoinGroupTask(getApplicationContext(), group).execute();
+                        new UpdateListViewTask(getApplicationContext()).execute();
                     }
-
-                    Group activity = new Group(nome);
-                    new SaveGroup(getApplicationContext(), activity).execute();
 
                     alertDialog.dismiss();
                 } catch (Exception e) {
@@ -106,11 +145,14 @@ public class GroupView extends AppCompatActivity {
             }
         });
 
+        ShowDialogWithLayout(view);
+
+
+        /*
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(view);
-        builder.setTitle("Adicionar grupo");
         alertDialog = builder.create();
-        alertDialog.show();
+        alertDialog.show();*/
     }
 
     private void  CreatorSwipeMenuCreator() {
@@ -154,7 +196,8 @@ public class GroupView extends AppCompatActivity {
         mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                String nome;
+                final String nome;
+                final Long idGroup;
                 switch (index) {
                     case 0:
                         // Recupera o grupo selecionado
@@ -172,13 +215,37 @@ public class GroupView extends AppCompatActivity {
 
                     case 1:
                         nome = groupList.get(position).getNomeGrupo();
-                        Toast.makeText(getBaseContext(), "2 - Grupo " + nome, Toast.LENGTH_LONG).show();
+                        idGroup = groupList.get(position).getId();
+                        LayoutInflater li = getLayoutInflater();
+                        View view = li.inflate(R.layout.my_groups_update, null);
+                        final EditText edt_groupname_old = (EditText) view.findViewById(R.id.edt_groupname_old);
+                        final EditText edt_groupname_new = (EditText) view.findViewById(R.id.edt_groupname_new);
+                        edt_groupname_old.setText(nome);
+                        view.findViewById(R.id.btn_update).setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View arg0) {
+                                try {
+                                    String new_name = edt_groupname_new.getText().toString();
+
+                                    if(!nome.equals(new_name) && !new_name.equals("")) {
+                                        Group group = new Group(idGroup, new_name);
+                                        new UpdateGroupTask(getApplicationContext(), group).execute();
+                                        new UpdateListViewTask(getApplicationContext()).execute();
+                                        alertDialog.dismiss();
+                                    }
+                                } catch (Exception e) {
+                                    SnackbarMessage.setProgressMessage(lay_group, false, e.getMessage());
+                                }
+                            }
+                        });
+
+                        ShowDialogWithLayout(view);
+
                         break;
 
                     case 2:
-                        // delete
                         nome = groupList.get(position).getNomeGrupo();
-                        Toast.makeText(getBaseContext(), "3 - Grupo " + nome, Toast.LENGTH_LONG).show();
+                        idGroup =  groupList.get(position).getId();
+                        ShowDialogWithoutLayout(nome, idGroup);
                         break;
                 }
                 // false : close the menu; true : not close the menu
@@ -190,10 +257,47 @@ public class GroupView extends AppCompatActivity {
 
     }
 
-    private class GetAllGroup extends AsyncTask<Void, Void, Void> {
+    private void ShowDialogWithLayout(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view);
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void ShowDialogWithoutLayout(String nome, long id) {
+        try {
+            if (id == 0)
+                return;
+
+            final long idGroup = id;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Remover grupo");
+            builder.setMessage("Você tem certeza que deseja Remover o grupo " + nome + "?");
+
+            builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface arg0, int arg1) {
+                    new RemoveGroupTask(getApplicationContext(), new Group(idGroup)).execute();
+                    new UpdateListViewTask(getApplicationContext()).execute();
+                }
+            });
+            //define um botão como negativo.
+            builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface arg0, int arg1) {
+                    //Não faz nada
+                }
+            });
+
+            alertDialog = builder.create();
+            alertDialog.show();
+        } catch (Exception e) {
+            Log.i("RemoveGroup", e.getMessage());
+        }
+    }
+
+    private class UpdateListViewTask extends AsyncTask<Void, Void, Void> {
 
         Context context;
-        public GetAllGroup(Context context){
+        public UpdateListViewTask(Context context){
             this.context = context;
         }
 
@@ -222,12 +326,12 @@ public class GroupView extends AppCompatActivity {
 
     }
 
-    private static class SaveGroup extends AsyncTask<Group, Void, Boolean> {
-        Context context;
+    private static class SaveGroupTask extends AsyncTask<Group, Void, Boolean> {
+        static Context context;
         Group group;
         boolean progress;
 
-        public SaveGroup(Context context, Group group){
+        public SaveGroupTask(Context context, Group group){
             this.context = context;
             this.group = group;
         }
@@ -235,7 +339,8 @@ public class GroupView extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Group... params) {
             try {
-                progress = groupController.AddNewGroup(group);
+                groupController.AddNewGroup(group);
+                progress = true;
             }
             catch (Exception e){
                 Log.e("Erro", e.getMessage());
@@ -248,6 +353,104 @@ public class GroupView extends AppCompatActivity {
         protected void onPostExecute(Boolean progress) {
             super.onPostExecute(progress);
             SnackbarMessage.setProgressMessage(lay_group, progress, " ao Adicionar Grupo.");
+        }
+    }
+
+    private static class JoinGroupTask extends AsyncTask<Group, Void, Boolean> {
+        static Context context;
+        Group group;
+        boolean progress;
+
+        public JoinGroupTask(Context context, Group group){
+            this.context = context;
+            this.group = group;
+        }
+
+        @Override
+        protected Boolean doInBackground(Group... params) {
+            try {
+                groupController.JoinExistingGroup(group.getId(), true);
+
+                progress = true;
+            }
+            catch (Exception e){
+                Log.e("Erro", e.getMessage());
+            }
+
+            return progress;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean progress) {
+            super.onPostExecute(progress);
+            SnackbarMessage.setProgressMessage(lay_group, progress, " ao Entrar em Grupo Existente.");
+        }
+    }
+
+    private static class RemoveGroupTask extends AsyncTask<Group, Void, Boolean> {
+        Context context;
+        Group group;
+        boolean progress;
+
+        public RemoveGroupTask(Context context, Group group){
+            this.context = context;
+            this.group = group;
+        }
+
+        @Override
+        protected Boolean doInBackground(Group... params) {
+            try {
+                progress = groupController.RemoveGroup(group);
+            }
+            catch (Exception e){
+                Log.e("Erro", e.getMessage());
+            }
+
+            return progress;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean progress) {
+            super.onPostExecute(progress);
+
+            if(progress)
+                groupController.GetSynchronizeFirebase();
+
+            SnackbarMessage.setProgressMessage(lay_group, progress, " ao Remover Grupo.");
+        }
+    }
+
+    private static class UpdateGroupTask extends AsyncTask<Group, Void, Boolean> {
+        Context context;
+        Group group;
+        boolean progress;
+
+        public UpdateGroupTask(Context context, Group group){
+            this.context = context;
+            this.group = group;
+        }
+
+        @Override
+        protected Boolean doInBackground(Group... params) {
+            try {
+                groupController.UpdateGroupName(group);
+                progress = true;
+            }
+            catch (Exception e){
+                Log.e("Erro", e.getMessage());
+            }
+
+            return progress;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean progress) {
+            super.onPostExecute(progress);
+
+            if(progress)
+                groupController.GetSynchronizeFirebase();
+
+            SnackbarMessage.setProgressMessage(lay_group, progress, " ao Atualizar Grupo.");
         }
     }
 }
