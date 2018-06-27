@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        id = findViewById(R.id.editText);
-        grupo = findViewById(R.id.editText2);
+        //id = findViewById(R.id.editText);
+        //grupo = findViewById(R.id.editText2);
         fireBasePersistence = new FireBasePersistence(getApplicationContext());
         groupControl = new GroupController(this);
 
