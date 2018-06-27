@@ -2,14 +2,24 @@ package com.fa7.todolist.client;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.model.Activity;
+import com.fa7.todolist.model.Collaborator;
+import com.fa7.todolist.model.Group;
+import com.fa7.todolist.persistence.firebase.FireBasePersistence;
 import com.fa7.todolist.persistence.room.AppDatabase;
 import java.util.List;
 
 public class ActivityClient extends ClientBase {
 
+    static FireBasePersistence fireBasePersistence;
+    Context context;
+
     public ActivityClient(Context context) {
+        this.context = context;
         db = AppDatabase.getInstance(context);
+        fireBasePersistence = new FireBasePersistence(context);
     }
 
     public Activity getActivity(long id) {
@@ -66,7 +76,7 @@ public class ActivityClient extends ClientBase {
         return null;
     }
 
-    public void insertAll(List<Activity> activities) {
+    public void insertAll(Activity... activities) {
         try {
             db.getActivity().insertAll(activities);
         } catch (Exception e) {
@@ -74,9 +84,11 @@ public class ActivityClient extends ClientBase {
         }
     }
 
-    public void insert(Activity activity) {
+    public void insert(Activity activity, Collaborator collaborator) {
         try {
             db.getActivity().insert(activity);
+            fireBasePersistence.ActivityOnFirebase(activity, collaborator, true);
+
         } catch (Exception e) {
             setMessage(e);
         }

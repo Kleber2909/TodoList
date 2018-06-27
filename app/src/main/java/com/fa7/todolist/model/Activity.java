@@ -5,7 +5,11 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 public class Activity {

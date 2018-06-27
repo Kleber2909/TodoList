@@ -25,7 +25,7 @@ public class CollaboratorClient extends ClientBase {
     }
 
 
-    public List<Collaborator> loadAllByIds(int[] collaboratorIds) {
+    public List<Collaborator> loadAllByIds(String[] collaboratorIds) {
         try {
             return db.getCollaborator().loadAllByIds(collaboratorIds);
         } catch (Exception e) {

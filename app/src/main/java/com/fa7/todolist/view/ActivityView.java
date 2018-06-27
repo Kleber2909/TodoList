@@ -15,8 +15,11 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import com.fa7.todolist.R;
 import com.fa7.todolist.controller.ActivityController;
+import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.controller.GroupController;
 import com.fa7.todolist.model.Activity;
+import com.fa7.todolist.model.Collaborator;
+import com.fa7.todolist.model.Group;
 import com.fa7.todolist.utils.SnackbarMessage;
 
 import java.util.List;
@@ -31,7 +34,10 @@ public class ActivityView extends AppCompatActivity {
     public static LinearLayout lay_activity;
     public static ActivityController activityController;
     private GroupController groupController;
-    private String grupo, prioridade;
+    private String prioridade;
+    static Collaborator userLoca;
+    List<Group> groups;
+    Group grupo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,8 @@ public class ActivityView extends AppCompatActivity {
                 SaveActivity();
             }
         });
+
+        //cbx_groups.setSelection();
     }
 
     private void InitializeComponents() {
@@ -59,32 +67,19 @@ public class ActivityView extends AppCompatActivity {
         rb_pending = (RadioButton) findViewById(R.id.rb_pending);
         rb_sucess = (RadioButton) findViewById(R.id.rb_sucess);
         btn_save = (FloatingActionButton) findViewById(R.id.btn_save);
-
+        userLoca = new CollaboratorController(getBaseContext()).GetUserLocal();
         activityController = new ActivityController(this);
         groupController = new GroupController(this);
     }
 
     private void InitializeSpinners() {
+
         // groups
-        List<String> groups = groupController.getAll();
-        ArrayAdapter<String> groupAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, groups);
-        cbx_groups.setAdapter(groupAdapter);
-        cbx_groups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View v, int posicao, long id) {
-                grupo = parent.getItemAtPosition(posicao).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+        new GetInitializeSpinners(getApplicationContext()).execute();
         // groups
         List<String> priorities = activityController.ListaPrioridades();
-        ArrayAdapter<String> priorityAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, priorities);
+        ArrayAdapter<String> priorityAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, priorities);
         cbx_priority.setAdapter(priorityAdapter);
         cbx_priority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -98,10 +93,11 @@ public class ActivityView extends AppCompatActivity {
 
             }
         });
+
     }
 
     public void SaveActivity(){
-        if(grupo.equals("")) {
+        if(grupo.getId() == 0) {
             SnackbarMessage.setProgressMessage(lay_activity, false, ": Selecione o grupo.");
             return;
         }
@@ -126,11 +122,11 @@ public class ActivityView extends AppCompatActivity {
         String data = edt_activity_date.getText().toString();
         String status = ((RadioButton) findViewById(rbg_status.getCheckedRadioButtonId())).getText().toString();
 
-        Activity activity = new Activity(grupo, title, description, data, prioridade, status);
+        Activity activity = new Activity(Long.toString(grupo.getId()), title, description, data, prioridade, status);
         new SaveActivity(getApplicationContext(), activity).execute();
     }
 
-    private static class SaveActivity extends AsyncTask<Activity, Void, Boolean> {
+    private class SaveActivity extends AsyncTask<Activity, Void, Boolean> {
         Context context;
         Activity activity;
         boolean progress;
@@ -142,7 +138,7 @@ public class ActivityView extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Activity... params) {
             try {
-                progress = activityController.AddNewActivity(activity);
+                progress = activityController.AddNewActivity(activity, userLoca);
             }
             catch (Exception e){
                 Log.e("Erro", e.getMessage());
@@ -155,6 +151,48 @@ public class ActivityView extends AppCompatActivity {
         protected void onPostExecute(Boolean progress) {
             super.onPostExecute(progress);
             SnackbarMessage.setProgressMessage(lay_activity, progress, " ao Adicionar Atividade.");
+        }
+    }
+
+    private class GetInitializeSpinners extends AsyncTask<Void, Void, Boolean> {
+        Context context;
+        boolean progress;
+        public GetInitializeSpinners(Context context){
+            this.context = context;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                groups = groupController.GetAllGroup();
+                ArrayAdapter<Group> groupAdapter = new ArrayAdapter<Group>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, groups);
+                cbx_groups.setAdapter(groupAdapter);
+                cbx_groups.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View v, int posicao, long id) {
+                        //grupo = parent.getItemAtPosition(posicao).toString();
+                        grupo = groups.get(posicao);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
+            }
+            catch (Exception e){
+                Log.e("Erro", e.getMessage());
+            }
+
+            return progress;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean progress) {
+            super.onPostExecute(progress);
+            SnackbarMessage.setProgressMessage(lay_activity, progress, " ao listar Grupos.");
         }
     }
 }

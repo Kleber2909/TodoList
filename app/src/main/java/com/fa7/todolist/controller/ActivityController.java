@@ -1,14 +1,10 @@
 package com.fa7.todolist.controller;
-
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
 import com.fa7.todolist.client.ActivityClient;
 import com.fa7.todolist.model.Activity;
+import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
-import com.fa7.todolist.persistence.firebase.FireBasePersistence;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +22,7 @@ public class ActivityController extends ControllerBase {
     }
 
     // Chamar esse método para entrar em grupo já existente
-    public boolean AddNewActivity(Activity activity){
+    public boolean AddNewActivity(Activity activity, Collaborator collaborator){
         try {
             if(activity != null) {
                 if(activity.getIdGrupo().equals("")) {
@@ -44,7 +40,7 @@ public class ActivityController extends ControllerBase {
                     return false;
                 }
 
-                client.insert(activity);
+                client.insert(activity, collaborator);
                 return true;
             } else {
                 Log.i("Erro: AddNewActivity", "Atividade nula.");

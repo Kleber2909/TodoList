@@ -1,6 +1,5 @@
 package com.fa7.todolist.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -10,25 +9,21 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.fa7.todolist.R;
-import com.fa7.todolist.control.GroupControl;
+import com.fa7.todolist.controller.CollaboratorController;
+import com.fa7.todolist.controller.GroupController;
 import com.fa7.todolist.model.Activity;
 import com.fa7.todolist.model.Collaborator;
-import com.fa7.todolist.model.Group;
+import com.fa7.todolist.persistence.File.FileData;
 import com.fa7.todolist.persistence.firebase.FireBasePersistence;
-import com.fa7.todolist.persistence.room.AppDatabase;
-import com.fa7.todolist.persistence.room.MainDatabase;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     EditText id;
     static EditText grupo;
     static FireBasePersistence fireBasePersistence;
-    static GroupControl groupControl;
+    static GroupController groupControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         id = findViewById(R.id.editText);
         grupo = findViewById(R.id.editText2);
         fireBasePersistence = new FireBasePersistence(getApplicationContext());
-        groupControl = new GroupControl(getApplicationContext());
+        groupControl = new GroupController(this);
 
     }
 
@@ -61,8 +56,17 @@ public class MainActivity extends AppCompatActivity {
 
                 //groupControl.JoinExistingGroup(Long.valueOf("1529460213972"));
                 //groupControl.JoinExistingGroup(Long.valueOf("1529460213000"));
-                  groupControl.GetSynchronizeFirebase();
+//                groupControl.GetSynchronizeFirebase();
+                //groupControl.SincFirebase();
+                //new CopiaBanco().CopiaBancoParaSD(context);
 
+                //new FileData().saveText(context, "TodoListUserLocal", "gOm0i5RDgXQgXiLOAhj273VTdAc2|Kleber Cavalcante|kleber@teste.com.br");
+
+                //Activity activity = new Activity("1529460213908", "Reunião projeto", "Realizar alinhamento das atividades de implantação", "20/06/2018", "Normal", "Pendente");
+
+               // Collaborator collaborator = new CollaboratorController(context).GetUserLocal();
+                //fireBasePersistence.ActivityOnFirebase(activity, collaborator, true);
+                //fireBasePersistence.GetGroupOfFirebase();
                 /*
                 List<Group> groupList = appDatabase.groupDAO().getAll();
 

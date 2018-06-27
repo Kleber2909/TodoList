@@ -17,7 +17,7 @@ public interface CollaboratorDAO {
     List<Collaborator> getAll();
 
     @Query("SELECT * FROM 'Collaborator' WHERE id IN (:collaboratorId)")
-    List<Collaborator> loadAllByIds(int[] collaboratorId);
+    List<Collaborator> loadAllByIds(String[] collaboratorId);
 
     @Query("SELECT * FROM 'Collaborator' WHERE id IN (:id)")
     Collaborator getCollaborator(String id);
@@ -25,8 +25,11 @@ public interface CollaboratorDAO {
     @Query("SELECT * FROM 'Collaborator' WHERE nomeColaborador LIKE :title LIMIT 1")
     Collaborator findByName(String title);
 
+    @Query("SELECT * FROM 'Collaborator' WHERE id IN (:groupId)")
+    List<Collaborator> getAllCollaboratorOfGroup(long groupId);
+
     @Insert
-    void insertAll(List<Collaborator> collaborator);
+    void insertAll(Collaborator... collaborator);
 
     @Insert
     void insert(Collaborator collaborator);

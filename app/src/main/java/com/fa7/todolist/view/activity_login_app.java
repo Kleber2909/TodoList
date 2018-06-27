@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.fa7.todolist.R;
+import com.fa7.todolist.persistence.File.FileData;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -107,6 +108,8 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
+                new FileData().saveText(this, "UserLocal", "gOm0i5RDgXQgXiLOAhj273VTdAc2|Kleber Cavalcante|kleber@teste.com.br");
+
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -131,6 +134,7 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
+                            new FileData().saveText(getBaseContext(), "UserLocal", "gOm0i5RDgXQgXiLOAhj273VTdAc2|Kleber Cavalcante|kleber@teste.com.br");
                             FirebaseUser user = mAuth.getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.

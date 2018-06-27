@@ -10,4 +10,6 @@
     <string name="str_profile_email">E-mail do usuário</string>
     <string name="facebook_app_id">2057912687784158</string>
     <string name="fb_login_protocol_scheme">fb2057912687784158</string>
+    <string name="str_add_group"> Adicionar grupo</string>
+    <string name="str_btn_add">Salvar</string>
 </resources>

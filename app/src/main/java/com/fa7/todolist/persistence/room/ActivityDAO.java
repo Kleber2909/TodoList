@@ -31,7 +31,7 @@ public interface ActivityDAO {
     List<Activity> getActivityByStatus(String status);
 
     @Insert
-    void insertAll(List<Activity> activity);
+    void insertAll(Activity... activity);
 
     @Insert
     void insert(Activity activity);
