@@ -57,7 +57,16 @@ public class GroupView extends AppCompatActivity {
             }
         });
     }
-    
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        groupController = new GroupController(this);
+        //groupController.GetSynchronizeFirebase();
+        new UpdateListViewTask(getBaseContext()).execute();
+    }
+
     private void InitializeComponents() {
         try {
             lay_group = (LinearLayout) findViewById(R.id.lay_group);
@@ -71,10 +80,6 @@ public class GroupView extends AppCompatActivity {
 
                 }
             });
-
-            groupController = new GroupController(this);
-            groupController.GetSynchronizeFirebase();
-            new UpdateListViewTask(getBaseContext()).execute();
         }
         catch (Exception e)
         {
@@ -146,13 +151,6 @@ public class GroupView extends AppCompatActivity {
         });
 
         ShowDialogWithLayout(view);
-
-
-        /*
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(view);
-        alertDialog = builder.create();
-        alertDialog.show();*/
     }
 
     private void  CreatorSwipeMenuCreator() {
