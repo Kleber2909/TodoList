@@ -75,10 +75,51 @@ public class GroupController  {
                 }
 
                 client.insert(group);
-                JoinExistingGroup(Long.parseLong("1529891054362"), false);
+                fireBasePersistence.GroupOnFirebase(group, true);
                 return true;
             } else {
                 Log.i("Erro: AddNewActivity", "Atividade nula.");
+                return false;
+            }
+
+        } catch (Exception ex) {
+            Log.i("Erro: AddNewActivity", ex.getMessage());
+        }
+        return false;
+    }
+
+    public boolean UpdateGroupName(Group group) {
+        try {
+            if(group != null) {
+                if(group.getNomeGrupo().equals("")) {
+                    Log.i("Erro: UpdateGroupName", "Informe o nome do grupo.");
+                    return false;
+                }
+
+                client.update(group);
+                fireBasePersistence.GroupOnFirebase(group, true);
+                JoinExistingGroup(group.getId(), true);
+                return true;
+            } else {
+                Log.i("Erro: AddNewActivity", "Atividade nula.");
+                return false;
+            }
+
+        } catch (Exception ex) {
+            Log.i("Erro: AddNewActivity", ex.getMessage());
+        }
+        return false;
+    }
+
+    public boolean RemoveGroup(Group group) {
+        try {
+            if(group != null) {
+                client.delete(group);
+                fireBasePersistence.GroupOnFirebase(group, false);
+                JoinExistingGroup(group.getId(), false);
+                return true;
+            } else {
+                Log.i("Erro: RemoveGroup", "Grupo nulo.");
                 return false;
             }
 

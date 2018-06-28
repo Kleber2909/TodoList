@@ -5,13 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.fa7.todolist.controller.GroupController;
+import com.fa7.todolist.model.Activity;
+import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
 import com.facebook.AccessToken;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -23,7 +23,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,21 +41,21 @@ public class FireBasePersistence extends AppCompatActivity {
     // Login E-mail
     private void GetDataBaseReference() {
         try {
-            FirebaseAuth.getInstance()
-                    .signInWithEmailAndPassword("a@a.com.br", "123456")
-                    .addOnSuccessListener(
-                            new OnSuccessListener<AuthResult>() {
-                                @Override
-                                public void onSuccess(AuthResult authResult) {
-
-                                    uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                                    final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                                    databaseReference = firebaseDatabase.getReference();
-                                    GetGroupOfFirebase();
-                                    // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-                                }
-                            });
+                FirebaseAuth.getInstance()
+                        .signInWithEmailAndPassword("c@c.com.br", "123456")
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            uID = task.getResult().getUser().getUid();
+                            databaseReference = FirebaseDatabase.getInstance().getReference();
+                            GetGroupOfFirebase();
+                            Log.i("Completo", "Logaod" + uID);
+                        } else {
+                            Log.i("Erro no login", "Erro no login");
+                        }
+                    }
+                });
         }
         catch (Exception e){
             Log.e("GetDataBaseReference", e.getMessage());
@@ -128,9 +127,42 @@ public class FireBasePersistence extends AppCompatActivity {
                         .child(String.valueOf(group.getId()))
                         .removeValue();
 
+            this.MyGroupOnFirebase(group, add);
 
         } catch (Exception e) {
             Log.e("DataOnFirebase", e.getMessage());
+        }
+    }
+
+    public void ActivityOnFirebase(final Activity activity, Collaborator collaborator, final Boolean add) {
+        try {
+            if (add) {
+                databaseReference
+                        .child("TodoList")
+                        .child("Groups")
+                        .child(activity.getIdGrupo())
+                        .child("activityList")
+                        .child(String.valueOf(activity.getId()))
+                        .setValue(activity);
+
+                databaseReference
+                        .child("TodoList")
+                        .child("Groups")
+                        .child(activity.getIdGrupo())
+                        .child("collaboratorList")
+                        .child(collaborator.getId())
+                        .setValue(collaborator);
+
+            } else
+                databaseReference
+                        .child("TodoList")
+                        .child("Groups")
+                        .child(activity.getIdGrupo())
+                        .child("activityList")
+                        .child(String.valueOf(activity.getId()))
+                        .removeValue();
+        } catch (Exception e) {
+            Log.e("ActivityOnFirebase", e.getMessage());
         }
     }
 
@@ -150,7 +182,6 @@ public class FireBasePersistence extends AppCompatActivity {
                         .child(uID)
                         .child(String.valueOf(group.getId()))
                         .removeValue();
-
 
         } catch (Exception e) {
             Log.e("DataOnFirebase", e.getMessage());
