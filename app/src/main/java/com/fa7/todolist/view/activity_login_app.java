@@ -40,7 +40,7 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
     private FirebaseAuth mAuth;
 
     private final int RC_SIGN_IN = 99;
-    private final String TAG = "Teste";//getResources().getString(R.string.app_name);
+    private final String TAG = getResources().getString(R.string.app_name);
     private CallbackManager mCallbackManager;
 
     @Override
