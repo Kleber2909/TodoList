@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Minhas Atividades </string>
     <string name="app_group">Meus Grupos </string>
+    <string name="app_people">Pessoas </string>
+
+    <string name="str_people_add">Adicionar </string>
+    <string name="str_people_share">Compartilhar </string>
+
+
     <string name="str_activity_title">Título da tarefa</string>
     <string name="str_txt_status">Status</string>
     <string name="str_rb_pending"> Pendente </string>

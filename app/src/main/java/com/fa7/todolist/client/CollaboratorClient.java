@@ -57,16 +57,6 @@ public class CollaboratorClient extends ClientBase {
         return null;
     }
 
-/*
-    public void insertAll(Collaborator... collaborators) {
-        try {
-            db.getCollaborator().insertAll(collaborators);
-        } catch (Exception e) {
-            setMessage(e);
-        }
-    }
-*/
-
     public void insert(Collaborator collaborator) {
         try {
             db.getCollaborator().insert(collaborator);
