@@ -32,8 +32,14 @@ public class MainActivity extends AppCompatActivity {
 
         //id = findViewById(R.id.editText);
         //grupo = findViewById(R.id.editText2);
-        fireBasePersistence = new FireBasePersistence(getApplicationContext());
-        groupControl = new GroupController(this);
+        try {
+            fireBasePersistence = new FireBasePersistence(getApplicationContext());
+            groupControl = new GroupController(this);
+        }
+        catch (Exception e){
+            Log.e("Erro", e.getMessage());
+        }
+
 
     }
 

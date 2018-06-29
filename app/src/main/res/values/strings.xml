@@ -16,4 +16,5 @@
     <string name="str_edt_group_name">Nome do grupo</string>
     <string name="str_btn_join">Entrar</string>
     <string name="str_btn_update">Atualizar</string>
+
 </resources>

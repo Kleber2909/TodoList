@@ -4,14 +4,18 @@ import android.content.Context;
 import android.util.Log;
 
 import com.fa7.todolist.model.Collaborator;
+import com.fa7.todolist.persistence.File.FileData;
 import com.fa7.todolist.persistence.room.AppDatabase;
 
 import java.util.List;
 
 public class CollaboratorClient extends ClientBase {
 
+    Context context;
     public CollaboratorClient(Context context) {
+        this.context = context;
         db = AppDatabase.getInstance(context);
+
     }
 
     public List<Collaborator> getAll() {
@@ -57,15 +61,6 @@ public class CollaboratorClient extends ClientBase {
         return null;
     }
 
-/*
-    public void insertAll(Collaborator... collaborators) {
-        try {
-            db.getCollaborator().insertAll(collaborators);
-        } catch (Exception e) {
-            setMessage(e);
-        }
-    }
-*/
 
     public void insert(Collaborator collaborator) {
         try {
@@ -75,6 +70,13 @@ public class CollaboratorClient extends ClientBase {
         }
     }
 
+    public void update(Collaborator collaborator) {
+        try {
+            db.getCollaborator().update(collaborator);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
 
     public void delete(Collaborator collaborator) {
         try {
@@ -91,6 +93,17 @@ public class CollaboratorClient extends ClientBase {
         } catch (Exception e) {
             setMessage(e);
         }
+    }
+
+    public void AddLocalUser(Collaborator collaborator){
+        if(getCollaborator(collaborator.getId()) == null)
+            insert(collaborator);
+        else
+            update(collaborator);
+
+        new FileData().saveText(context,
+                "TodoListUserLocal",
+                collaborator.getId()+"|"+collaborator.getNomeColaborador()+"|"+collaborator.getEmail()+"|G");
     }
 
     @Override
