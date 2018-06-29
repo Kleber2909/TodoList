@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Minhas Atividades </string>
+    <string name="app_group">Meus Grupos </string>
     <string name="str_activity_title">Título da tarefa</string>
     <string name="str_txt_status">Status</string>
     <string name="str_rb_pending"> Pendente </string>

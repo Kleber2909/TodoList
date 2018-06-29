@@ -10,6 +10,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,7 +38,6 @@ public class GroupView extends AppCompatActivity {
 
     private static GroupController groupController;
     public static LinearLayout lay_group;
-    private FloatingActionButton btn_add;
     private SwipeMenuCreator creator;
     private SwipeMenuListView mListView;
     private ListView listViewGroups;
@@ -47,37 +49,43 @@ public class GroupView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_groups);
         InitializeComponents();
-
         CreatorSwipeMenuCreator();
-
-        btn_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ShowViewAddGroup();
-            }
-        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         groupController = new GroupController(this);
-        //groupController.GetSynchronizeFirebase();
         new UpdateListViewTask(getBaseContext()).execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_add, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_add:
+                ShowViewAddGroup();
+                return true;
+            default:
+                    return super.onOptionsItemSelected(item);
+        }
     }
 
     private void InitializeComponents() {
         try {
             lay_group = (LinearLayout) findViewById(R.id.lay_group);
-            btn_add = (FloatingActionButton) findViewById(R.id.btn_add);
             mListView = (SwipeMenuListView) findViewById(R.id.listGroups);
             listViewGroups = (ListView) findViewById(R.id.listGroups);
             listViewGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                     Toast.makeText(getBaseContext(), "Click ListView", Toast.LENGTH_SHORT);
-
                 }
             });
         }
@@ -85,7 +93,6 @@ public class GroupView extends AppCompatActivity {
         {
             Log.e("InitializeComponents", e.getMessage());
         }
-
     }
 
     private void ShowViewAddGroup() {

@@ -112,9 +112,9 @@ public class FireBasePersistence extends AppCompatActivity {
                 });
     }
 
-    public void GroupOnFirebase(final Group group, final Boolean add) {
+    public void GroupOnFirebase(final Group group, final Boolean action) {
         try {
-            if (add) {
+            if (action) {
                 databaseReference
                         .child("TodoList")
                         .child("Groups")
@@ -127,8 +127,7 @@ public class FireBasePersistence extends AppCompatActivity {
                         .child(String.valueOf(group.getId()))
                         .removeValue();
 
-            this.MyGroupOnFirebase(group, add);
-
+            this.MyGroupOnFirebase(new Group(group.getId()), action);
         } catch (Exception e) {
             Log.e("DataOnFirebase", e.getMessage());
         }

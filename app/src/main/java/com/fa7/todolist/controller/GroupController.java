@@ -78,12 +78,12 @@ public class GroupController  {
                 fireBasePersistence.GroupOnFirebase(group, true);
                 return true;
             } else {
-                Log.i("Erro: AddNewActivity", "Atividade nula.");
+                Log.i("Erro: AddNewGroup", "Grupo está nulo.");
                 return false;
             }
 
         } catch (Exception ex) {
-            Log.i("Erro: AddNewActivity", ex.getMessage());
+            Log.i("Erro: AddNewGroup", ex.getMessage());
         }
         return false;
     }
@@ -98,15 +98,14 @@ public class GroupController  {
 
                 client.update(group);
                 fireBasePersistence.GroupOnFirebase(group, true);
-                JoinExistingGroup(group.getId(), true);
                 return true;
             } else {
-                Log.i("Erro: AddNewActivity", "Atividade nula.");
+                Log.i("Erro: UpdateGroupName", "Grupo nula.");
                 return false;
             }
 
         } catch (Exception ex) {
-            Log.i("Erro: AddNewActivity", ex.getMessage());
+            Log.i("Erro: UpdateGroupName", ex.getMessage());
         }
         return false;
     }
@@ -116,7 +115,6 @@ public class GroupController  {
             if(group != null) {
                 client.delete(group);
                 fireBasePersistence.GroupOnFirebase(group, false);
-                JoinExistingGroup(group.getId(), false);
                 return true;
             } else {
                 Log.i("Erro: RemoveGroup", "Grupo nulo.");
