@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.fa7.todolist.R;
+import com.fa7.todolist.client.ActivityClient;
 import com.fa7.todolist.client.CollaboratorClient;
 import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.model.Activity;
@@ -39,6 +40,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
 
 public class activity_login_app extends AppCompatActivity implements View.OnClickListener {
 
@@ -211,7 +214,7 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
 
     private void StartMainActivity()
     {
-        startActivity(new Intent(this, ActivityView.class));
+        startActivity(new Intent(this, ActivityView.class).putExtra("key", "1530322061261"));
         onBackPressed();
     }
 }
