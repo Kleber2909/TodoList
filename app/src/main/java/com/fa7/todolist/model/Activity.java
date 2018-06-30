@@ -105,5 +105,4 @@ public class Activity {
         this.status = status;
     }
 
-
 }

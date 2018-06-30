@@ -8,6 +8,7 @@ import com.fa7.todolist.model.Activity;
 import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
 import com.fa7.todolist.persistence.firebase.FireBasePersistence;
+import com.fa7.todolist.persistence.room.ActivityDAO;
 import com.fa7.todolist.persistence.room.AppDatabase;
 import java.util.List;
 
@@ -76,6 +77,15 @@ public class ActivityClient extends ClientBase {
         return null;
     }
 
+    public List<ActivityDAO.ActivityAndGroup> loadAllByDate(String data, String status) {
+        try {
+            return db.getActivity().loadAllByDate(data, status);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+        return null;
+    }
+
     public void insertAll(Activity... activities) {
         try {
             db.getActivity().insertAll(activities);
@@ -97,6 +107,30 @@ public class ActivityClient extends ClientBase {
     public void delete(Activity activity) {
         try {
             db.getActivity().delete(activity);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
+    public void deleteById(long id) {
+        try {
+            db.getActivity().deleteById(id);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
+    public void update(Activity activity) {
+        try {
+            db.getActivity().update(activity);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
+    public void updateStatus(long id, String status) {
+        try {
+            db.getActivity().updateStatus(id, status);
         } catch (Exception e) {
             setMessage(e);
         }

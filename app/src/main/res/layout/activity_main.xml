@@ -7,7 +7,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabAddDes"
+        android:id="@+id/fabNovo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -15,7 +15,7 @@
         android:layout_marginRight="8dp"
         android:background="@android:color/holo_blue_dark"
         android:src="@mipmap/ic_add"
-        app:backgroundTint="@android:color/holo_blue_dark"
+        app:fabSize="normal"
         app:elevation="4dp" />
 
     <LinearLayout
@@ -27,12 +27,12 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:background="@android:color/holo_blue_dark"
+            android:background="#8BCBE0"
             android:orientation="horizontal"
             tools:context="com.rfinance.despesas.activity_despesas">
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fabPreviousDes"
+                android:id="@+id/fabAnterior"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -59,14 +59,13 @@
                 android:textStyle="bold" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fabNextDes"
+                android:id="@+id/fabProximo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/fabPreviousDes"
-                android:layout_marginEnd="57dp"
-                android:layout_marginRight="57dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="60dp"
                 android:clickable="true"
                 android:src="@mipmap/ic_next"
                 app:backgroundTint="@android:color/background_light"
