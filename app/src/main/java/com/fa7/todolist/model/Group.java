@@ -20,6 +20,10 @@ public class Group {
     private List<Collaborator> collaboratorList;
     @Ignore
     private List<Activity> activityList;
+    @Ignore
+    private Collaborator collaborator;
+    @Ignore
+    private Activity activity;
 
     public Group() {
     }
@@ -56,6 +60,15 @@ public class Group {
         this.collaboratorList = collaboratorList;
         this.activityList = activityList;
     }
+
+    @Ignore
+    public Group(long id, String nomeGrupo, Collaborator collaborator, Activity activity) {
+        this.id = id;
+        this.nomeGrupo = nomeGrupo;
+        this.collaborator = collaborator;
+        this.activity = activity;
+    }
+
 
 
     @Override
