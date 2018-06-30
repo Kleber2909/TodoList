@@ -15,7 +15,6 @@
         android:layout_marginRight="8dp"
         android:background="@android:color/holo_blue_dark"
         android:src="@mipmap/ic_add"
-        app:backgroundTint="@android:color/holo_blue_dark"
         app:fabSize="normal"
         app:elevation="4dp" />
 
@@ -28,7 +27,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:background="@android:color/holo_blue_dark"
+            android:background="#8BCBE0"
             android:orientation="horizontal"
             tools:context="com.rfinance.despesas.activity_despesas">
 

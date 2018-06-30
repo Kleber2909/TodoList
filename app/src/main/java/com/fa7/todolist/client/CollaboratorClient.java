@@ -84,6 +84,13 @@ public class CollaboratorClient extends ClientBase {
         }
     }
 
+    public void update(Collaborator collaborator) {
+        try {
+            db.getCollaborator().update(collaborator);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
 
     public void deleteAll() {
         try {

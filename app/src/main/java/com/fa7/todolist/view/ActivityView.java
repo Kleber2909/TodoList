@@ -1,4 +1,5 @@
 package com.fa7.todolist.view;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -22,7 +24,10 @@ import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
 import com.fa7.todolist.utils.SnackbarMessage;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class ActivityView extends AppCompatActivity {
 
@@ -53,7 +58,42 @@ public class ActivityView extends AppCompatActivity {
             }
         });
 
-        //cbx_groups.setSelection();
+        edt_activity_date.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentDate=Calendar.getInstance();
+                int mYear=mcurrentDate.get(Calendar.YEAR);
+                int mMonth=mcurrentDate.get(Calendar.MONTH);
+                int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog mDatePicker=new DatePickerDialog(ActivityView.this, new DatePickerDialog.OnDateSetListener() {
+                    public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                        // TODO Auto-generated method stub
+
+                        Calendar myCalendar = Calendar.getInstance();
+                        myCalendar.set(Calendar.YEAR, selectedyear);
+                        myCalendar.set(Calendar.MONTH, selectedmonth);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, selectedday);
+                        String myFormat = "dd/MM/yyyy"; //In which you need put here
+                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+                        edt_activity_date.setText(sdf.format(myCalendar.getTime()));
+
+                    }
+                },mYear, mMonth, mDay);
+                mDatePicker.setTitle("Selecionar Data");
+                mDatePicker.show();  }
+        });
+
+        Long b = getIntent().getExtras().getLong("key");
+        if(b != 0)
+        {
+            this.setTitle("Atualizar Atividade");
+        }else{
+            this.setTitle("Adicionar Atividade");
+        }
+
     }
 
     private void InitializeComponents() {
