@@ -49,6 +49,15 @@ public class Collaborator {
         this.typeLogin = typeLogin;
     }
 
+    @Ignore
+    public Collaborator(Long idFarebase, String nomeColaborador, String typeLogin, String id, String email) {
+        this.id = id;
+        this.idFarebase = idFarebase;
+        this.nomeColaborador = nomeColaborador;
+        this.email = email;
+        this.typeLogin = typeLogin;
+    }
+
     public Collaborator() {
     }
 

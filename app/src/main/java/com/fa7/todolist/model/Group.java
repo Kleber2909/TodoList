@@ -53,6 +53,7 @@ public class Group {
         this.activityList = activityList;
     }
 
+
     @Ignore
     public Group(long id, String nomeGrupo, List<Collaborator> collaboratorList, List<Activity> activityList) {
         this.id = id;
@@ -60,7 +61,13 @@ public class Group {
         this.collaboratorList = collaboratorList;
         this.activityList = activityList;
     }
-
+    @Ignore
+    public Group(String nomeGrupo, long id, List<Activity> activityList,  List<Collaborator> collaboratorList) {
+        this.id = id;
+        this.nomeGrupo = nomeGrupo;
+        this.collaboratorList = collaboratorList;
+        this.activityList = activityList;
+    }
     @Ignore
     public Group(long id, String nomeGrupo, Collaborator collaborator, Activity activity) {
         this.id = id;

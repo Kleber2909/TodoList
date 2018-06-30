@@ -192,6 +192,7 @@ public class GroupController  {
             try {
 
                 // Verifica se o grupo já existe no SqLite para Atualizar ou Adicionar
+
                 if (appDatabase.getGroup().getGroup(group.getId()) == null)
                     appDatabase.getGroup().insert(group);
                 else
