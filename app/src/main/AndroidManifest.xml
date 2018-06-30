@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.PeopleDetailView"
+        <activity android:name=".view.CollaboratorDetailView"
             android:label="@string/app_people">
 
         </activity>

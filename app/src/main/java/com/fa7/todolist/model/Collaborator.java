@@ -18,6 +18,8 @@ public class Collaborator {
     private String email;
     @ColumnInfo(name = "typrLogin")
     private String typeLogin;
+    @ColumnInfo(name = "imagePath")
+    private String imagePath;
 
     @Ignore
     public Collaborator(String id, String nomeColaborador, String email) {
@@ -72,5 +74,13 @@ public class Collaborator {
 
     public void setTypeLogin(String typeLogin) {
         this.typeLogin = typeLogin;
+    }
+
+    public String getImagePath(){
+        return this.imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

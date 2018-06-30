@@ -101,7 +101,7 @@ public class CollaboratorClient extends ClientBase {
 
         new FileData().saveText(context,
                 "TodoListUserLocal",
-                collaborator.getId()+"|"+collaborator.getNomeColaborador()+"|"+collaborator.getEmail()+"|G");
+                collaborator.getId()+"|"+collaborator.getNomeColaborador()+"|"+collaborator.getEmail()+"|G|"+collaborator.getImagePath());
     }
 
     public void DelLocalUser(){
