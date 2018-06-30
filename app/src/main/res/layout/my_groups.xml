@@ -20,22 +20,4 @@
             android:layout_weight="1" />
 
     </LinearLayout>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_add"
-        android:tint="#ffffff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:src="@mipmap/ic_save"
-        android:layout_margin="16dp" />
-
-    <!--<item-->
-        <!--android:id="@+id/menu_item_share"-->
-        <!--android:showAsAction="ifRoom"-->
-        <!--android:title="Share"-->
-        <!--android:actionProviderClass=-->
-            <!--"android.widget.ShareActionProvider" />-->
-
 </FrameLayout>

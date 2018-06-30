@@ -61,7 +61,6 @@ public class CollaboratorClient extends ClientBase {
         return null;
     }
 
-
     public void insert(Collaborator collaborator) {
         try {
             db.getCollaborator().insert(collaborator);
