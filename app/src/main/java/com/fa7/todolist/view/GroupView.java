@@ -27,8 +27,12 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.fa7.todolist.R;
+import com.fa7.todolist.client.GroupCollaboratorClient;
+import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.controller.GroupController;
+import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
+import com.fa7.todolist.model.GroupCollaborator;
 import com.fa7.todolist.utils.SnackbarMessage;
 
 import java.util.List;
@@ -36,6 +40,8 @@ import java.util.List;
 public class GroupView extends AppCompatActivity {
 
     private static GroupController groupController;
+    private static GroupCollaboratorClient groupCollaboratorClient;
+    static Collaborator userLoca;
     public static LinearLayout lay_group;
     private SwipeMenuCreator creator;
     private SwipeMenuListView mListView;
@@ -47,14 +53,18 @@ public class GroupView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_groups);
+        userLoca = new CollaboratorController(getBaseContext()).GetUserLocal();
         InitializeComponents();
         CreatorSwipeMenuCreator();
+        new UpdateListViewTask(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         groupController = new GroupController(this);
+        groupCollaboratorClient = new GroupCollaboratorClient(this);
+        groupController.GetSynchronizeFirebase();
         new UpdateListViewTask(getBaseContext()).execute();
     }
 
@@ -344,6 +354,7 @@ public class GroupView extends AppCompatActivity {
         protected Boolean doInBackground(Group... params) {
             try {
                 groupController.AddNewGroup(group);
+                groupCollaboratorClient.insert(new GroupCollaborator(group.getId(), userLoca.getId()));
                 progress = true;
             }
             catch (Exception e){

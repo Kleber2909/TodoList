@@ -22,7 +22,7 @@ public class ActivityController extends ControllerBase {
     }
 
     // Chamar esse método para entrar em grupo já existente
-    public boolean AddNewActivity(Activity activity, Collaborator collaborator){
+    public boolean AddNewActivity(Activity activity, Collaborator collaborator, Boolean add){
         try {
             if(activity != null) {
                 if(activity.getIdGrupo().equals("")) {
@@ -40,7 +40,10 @@ public class ActivityController extends ControllerBase {
                     return false;
                 }
 
-                client.insert(activity, collaborator);
+                if(add)
+                    client.insert(activity, collaborator);
+                else
+                    client.update(activity, collaborator);
                 return true;
             } else {
                 Log.i("Erro: AddNewActivity", "Atividade nula.");

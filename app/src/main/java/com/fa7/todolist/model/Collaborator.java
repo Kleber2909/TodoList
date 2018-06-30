@@ -6,12 +6,16 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.util.Date;
+
 @Entity
 public class Collaborator {
 
     @NonNull
     @PrimaryKey
     private String id;
+    @ColumnInfo(name = "idFarebase")
+    private long idFarebase;
     @ColumnInfo(name = "nomeColaborador")
     private String nomeColaborador;
     @ColumnInfo(name = "email")
@@ -21,6 +25,15 @@ public class Collaborator {
 
     @Ignore
     public Collaborator(String id, String nomeColaborador, String email) {
+        this.idFarebase = new Date().getTime();
+        this.id = id;
+        this.nomeColaborador = nomeColaborador;
+        this.email = email;
+    }
+
+    @Ignore
+    public Collaborator(Long idFarebase, String id, String nomeColaborador, String email) {
+        this.idFarebase = idFarebase;
         this.id = id;
         this.nomeColaborador = nomeColaborador;
         this.email = email;
@@ -72,5 +85,13 @@ public class Collaborator {
 
     public void setTypeLogin(String typeLogin) {
         this.typeLogin = typeLogin;
+    }
+
+    public long getIdFarebase() {
+        return idFarebase;
+    }
+
+    public void setIdFarebase(long idFarebase) {
+        this.idFarebase = idFarebase;
     }
 }

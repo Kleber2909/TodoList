@@ -40,6 +40,17 @@ public class Activity {
         this.status = status;
     }
 
+    @Ignore
+    public Activity(Long id, String idGrupo, String titulo, String descricao, String data, String prioridade, String status){
+        this.id = id;
+        this.idGrupo = idGrupo;
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.data = data;
+        this.prioridade = prioridade;
+        this.status = status;
+    }
+
     public  Activity(){
 
     }
