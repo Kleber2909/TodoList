@@ -85,14 +85,6 @@ public class CollaboratorClient extends ClientBase {
         }
     }
 
-    public void update(Collaborator collaborator) {
-        try {
-            db.getCollaborator().update(collaborator);
-        } catch (Exception e) {
-            setMessage(e);
-        }
-    }
-
     public void deleteAll() {
         try {
             db.getCollaborator().deleteAll();
@@ -110,6 +102,10 @@ public class CollaboratorClient extends ClientBase {
         new FileData().saveText(context,
                 "TodoListUserLocal",
                 collaborator.getId()+"|"+collaborator.getNomeColaborador()+"|"+collaborator.getEmail()+"|G");
+    }
+
+    public void DelLocalUser(){
+        new FileData().delText(context);
     }
 
     @Override

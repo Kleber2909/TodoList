@@ -3,11 +3,16 @@ package com.fa7.todolist.view;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +37,10 @@ import com.fa7.todolist.controller.GroupController;
 import com.fa7.todolist.model.Group;
 import com.fa7.todolist.utils.SnackbarMessage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GroupView extends AppCompatActivity {
 
@@ -42,6 +51,8 @@ public class GroupView extends AppCompatActivity {
     private ListView listViewGroups;
     private static List<Group> groupList;
     static AlertDialog alertDialog;
+    private SimpleAdapter simpleAdapter;
+    private FloatingActionButton fabNovoGrupo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +70,6 @@ public class GroupView extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.group_menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_add:
@@ -80,6 +83,7 @@ public class GroupView extends AppCompatActivity {
     private void InitializeComponents() {
         try {
             lay_group = (LinearLayout) findViewById(R.id.lay_group);
+            fabNovoGrupo = findViewById(R.id.fabNovoGrupo);
             mListView = (SwipeMenuListView) findViewById(R.id.listGroups);
             listViewGroups = (ListView) findViewById(R.id.listGroups);
             listViewGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -87,6 +91,14 @@ public class GroupView extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Click ListView", Toast.LENGTH_SHORT);
                 }
             });
+
+            fabNovoGrupo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShowViewAddGroup();
+                }
+            });
+
         }
         catch (Exception e)
         {
@@ -167,30 +179,30 @@ public class GroupView extends AppCompatActivity {
             public void create(SwipeMenu menu) {
 
                 SwipeMenuItem item1 = new SwipeMenuItem(getApplicationContext());
-               // item1.setBackground(new ColorDrawable(Color.rgb(68, 216, 113)));
-                item1.setWidth(100);
-//                item1.setTitle("Compartilhar");
-//                item1.setTitleSize(10);
-//                item1.setTitleColor(Color.BLACK);
-                item1.setIcon(R.mipmap.ic_share);
+                item1.setBackground(new ColorDrawable(Color.rgb(17, 102, 17)));
+                item1.setWidth(dp2px(90));
+                item1.setTitle("Compartilhar");
+                item1.setTitleSize(10);
+                item1.setTitleColor(Color.WHITE);
+                item1.setIcon(R.mipmap.ic_sharewhite);
                 menu.addMenuItem(item1);
 
                 SwipeMenuItem item2 = new SwipeMenuItem(getApplicationContext());
-               // item2.setBackground(new ColorDrawable(Color.rgb(86, 178, 232)));
-                item2.setWidth(100);
-//                item2.setTitle("Editar");
-//                item2.setTitleSize(10);
-//                item2.setTitleColor(Color.BLACK);
-                item2.setIcon(R.mipmap.ic_edit);
+                item2.setBackground(new ColorDrawable(Color.rgb(86, 178, 232)));
+                item2.setWidth(dp2px(90));
+                item2.setTitle("Editar");
+                item2.setTitleSize(10);
+                item2.setTitleColor(Color.WHITE);
+                item2.setIcon(R.mipmap.ic_editwhite);
                 menu.addMenuItem(item2);
 
                 SwipeMenuItem item3 = new SwipeMenuItem(getApplicationContext());
-              //  item3.setBackground(new ColorDrawable(Color.rgb(212, 32, 32)));
-                item3.setWidth(100);
-//                item3.setTitle("Excluir");
-//                item3.setTitleSize(10);
-//                item3.setTitleColor(Color.BLACK);
-                item3.setIcon(R.mipmap.ic_delete);
+                item3.setBackground(new ColorDrawable(Color.rgb(212, 32, 32)));
+                item3.setWidth(dp2px(90));
+                item3.setTitle("Excluir");
+                item3.setTitleSize(10);
+                item3.setTitleColor(Color.WHITE);
+                item3.setIcon(R.mipmap.ic_deletewhite);
                 menu.addMenuItem(item3);
             }
         };
@@ -210,11 +222,11 @@ public class GroupView extends AppCompatActivity {
                         sharingIntent.setType("text/plain");
                         String shareBody = "Olá! "+
                                 "Você foi convidado para entrar no grupo de atividades " +
-                                nome + ". Use o código " + groupList.get(position).getId() + " para entrar!";
+                                nome + ". Use o código a seguir para entrar " + String.valueOf(groupList.get(position).getId());
                         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Convite para grupo de atividades");
                         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                         startActivity(Intent.createChooser(sharingIntent, "Compartilhar via"));
-                        Toast.makeText(getBaseContext(), "1 - Grupo " + nome, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getBaseContext(), "1 - Grupo " + nome, Toast.LENGTH_LONG).show();
                         break;
 
                     case 1:
@@ -307,19 +319,31 @@ public class GroupView extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
+            try {
+                groupList = groupController.GetAllGroup();
 
-            groupList = groupController.GetAllGroup();
-            final ArrayAdapter<Group> adapter = new ArrayAdapter<Group>(context,
-                    android.R.layout.simple_list_item_1, groupList);
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    listViewGroups.setAdapter(adapter);
+                ArrayList<HashMap<String,String>> arrayList=new ArrayList<>();
+                for (int i=0;i<groupList.size();i++)
+                {
+                    HashMap<String,String> hashMap=new HashMap<>();
+                    hashMap.put("nome",groupList.get(i).getNomeGrupo());
+                    arrayList.add(hashMap);
                 }
-            });
 
+                String[] from={"nome"};//string array
+                int[] to={R.id.txt_group};//int array of views id's
+                simpleAdapter = new SimpleAdapter(context, arrayList ,R.layout.my_groups_item,from,to);//Create object and set the parameters for simpleAdapter
 
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listViewGroups.setAdapter(simpleAdapter);
+                    }
+                });
+
+            }catch (Exception ex){
+                String a = "";
+            }
             return null;
         }
 
@@ -457,4 +481,11 @@ public class GroupView extends AppCompatActivity {
             SnackbarMessage.setProgressMessage(lay_group, progress, " ao Atualizar Grupo.");
         }
     }
+
+    private int dp2px(int dp)
+    {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                getResources().getDisplayMetrics());
+    }
+
 }

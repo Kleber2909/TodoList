@@ -57,14 +57,3 @@
         android:elevation="4dp"
         android:src="@mipmap/ic_userwhite" />
 </RelativeLayout>
-
-    <!--<ImageButton-->
-        <!--android:id="@+id/user_profile_photo"-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="-50dp"-->
-        <!--android:background="@drawable/bak"-->
-        <!--android:elevation="4dp"-->
-        <!--android:src="@drawable/ic_person_outline_black_24dp" />-->
-
