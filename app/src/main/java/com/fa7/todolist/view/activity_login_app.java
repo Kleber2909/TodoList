@@ -46,6 +46,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONException;
@@ -173,6 +174,7 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
                 collaborator.setEmail(account.getEmail());
                 collaborator.setImagePath(account.getPhotoUrl().getPath());
                 collaborator.setTypeLogin("G");
+                collaborator.setIdFarebase(new Date().getTime());
 
                 firebaseAuthWithGoogle(account);
 

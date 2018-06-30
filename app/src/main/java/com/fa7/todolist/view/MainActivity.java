@@ -32,9 +32,12 @@ import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.fa7.todolist.R;
 import com.fa7.todolist.adapter.ActivityAdapter;
 import com.fa7.todolist.client.ActivityClient;
+import com.fa7.todolist.controller.ActivityController;
+import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.controller.GroupController;
 import com.fa7.todolist.model.Activity;
 import com.fa7.todolist.persistence.File.FileData;
+import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.persistence.firebase.FireBasePersistence;
 import com.fa7.todolist.persistence.room.ActivityDAO;
 
@@ -52,117 +55,116 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FloatingActionButton fabAnterior, fabProximo, fabNovo;
     private TextView txbData;
     static List<ActivityDAO.ActivityAndGroup> oList;
-
+    static Collaborator userLoca;
+    public static ActivityController activityController;
     private ActivityAdapter adapter;
     private int LineView;
     private ListView lstAtividades;
-
+    private GroupController groupController;
     private int TipoFiltro = 0;
     private int IdList = 0;
     long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
 
-//        oFireBasePersistence = new FireBasePersistence(getApplicationContext());
-//        oFireBasePersistence.GetGroupOfFirebase();
+            oActivityClient = new ActivityClient(this);
+            userLoca = new CollaboratorController(getBaseContext()).GetUserLocal();
+            activityController = new ActivityController(this);
+            groupController = new GroupController(this);
 
-//        GroupController oG = new GroupController(this);
-//        oG.GetSynchronizeFirebase();
+            fabAnterior = findViewById(R.id.fabAnterior);
+            fabAnterior.setOnClickListener(this);
+            fabProximo = findViewById(R.id.fabProximo);
+            fabProximo.setOnClickListener(this);
+            fabNovo = findViewById(R.id.fabNovo);
+            fabNovo.setOnClickListener(this);
+            txbData = findViewById(R.id.txbData);
 
-        oActivityClient = new ActivityClient(this);
-//        oList = oActivityClient.getAll();
+            txbData.setOnClickListener(new View.OnClickListener() {
 
-        fabAnterior = findViewById(R.id.fabAnterior);
-        fabAnterior.setOnClickListener(this);
-        fabProximo = findViewById(R.id.fabProximo);
-        fabProximo.setOnClickListener(this);
-        fabNovo = findViewById(R.id.fabNovo);
-        fabNovo.setOnClickListener(this);
-        txbData = findViewById(R.id.txbData);
+                @Override
+                public void onClick(View v) {
+                    Calendar mcurrentDate = oCalendar;
+                    int mYear = mcurrentDate.get(Calendar.YEAR);
+                    int mMonth = mcurrentDate.get(Calendar.MONTH);
+                    int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
 
-        txbData.setOnClickListener(new View.OnClickListener() {
+                    DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                            // TODO Auto-generated method stub
 
-            @Override
-            public void onClick(View v) {
-                Calendar mcurrentDate=oCalendar;
-                int mYear=mcurrentDate.get(Calendar.YEAR);
-                int mMonth=mcurrentDate.get(Calendar.MONTH);
-                int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
+                            Calendar myCalendar = Calendar.getInstance();
+                            myCalendar.set(Calendar.YEAR, selectedyear);
+                            myCalendar.set(Calendar.MONTH, selectedmonth);
+                            myCalendar.set(Calendar.DAY_OF_MONTH, selectedday);
 
-                DatePickerDialog mDatePicker=new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                        // TODO Auto-generated method stub
+                            oCalendar = myCalendar;
+                            exibirData();
 
-                        Calendar myCalendar = Calendar.getInstance();
-                        myCalendar.set(Calendar.YEAR, selectedyear);
-                        myCalendar.set(Calendar.MONTH, selectedmonth);
-                        myCalendar.set(Calendar.DAY_OF_MONTH, selectedday);
+                        }
+                    }, mYear, mMonth, mDay);
+                    mDatePicker.setTitle("Selecionar Data");
+                    mDatePicker.show();
+                }
+            });
 
-                        oCalendar = myCalendar;
-                        exibirData();
+            TabHost host = (TabHost) findViewById(R.id.tabHost);
+            host.setup();
 
+            //Tab 1
+            TabHost.TabSpec spec = host.newTabSpec("Todas");
+            spec.setContent(R.id.tabTodos);
+            spec.setIndicator("Todas");
+            host.addTab(spec);
+
+            //Tab 2
+            spec = host.newTabSpec("Pendentes");
+            spec.setContent(R.id.tabPendentes);
+            spec.setIndicator("Pendentes");
+            host.addTab(spec);
+
+            //Tab 3
+            spec = host.newTabSpec("Concluidas");
+            spec.setContent(R.id.tabRealizadas);
+            spec.setIndicator("Concluidas");
+            host.addTab(spec);
+
+            host.getTabWidget().getChildAt(0).getBackground().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
+            host.getTabWidget().getChildAt(1).getBackground().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
+            host.getTabWidget().getChildAt(2).getBackground().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
+
+            host.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+                @Override
+                public void onTabChanged(String tabId) {
+                    if (tabId.equals("Todas")) {
+                        TipoFiltro = 0;
+                    } else if (tabId.equals("Pendentes")) {
+                        TipoFiltro = 1;
+                    } else {
+                        TipoFiltro = 2;
                     }
-                },mYear, mMonth, mDay);
-                mDatePicker.setTitle("Selecionar Data");
-                mDatePicker.show();  }
-        });
-
-        TabHost host = (TabHost)findViewById(R.id.tabHost);
-        host.setup();
-
-        //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Todas");
-        spec.setContent(R.id.tabTodos);
-        spec.setIndicator("Todas");
-        host.addTab(spec);
-
-        //Tab 2
-        spec = host.newTabSpec("Pendentes");
-        spec.setContent(R.id.tabPendentes);
-        spec.setIndicator("Pendentes");
-        host.addTab(spec);
-
-        //Tab 3
-        spec = host.newTabSpec("Concluidas");
-        spec.setContent(R.id.tabRealizadas);
-        spec.setIndicator("Concluidas");
-        host.addTab(spec);
-
-        host.getTabWidget().getChildAt(0).getBackground().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-        host.getTabWidget().getChildAt(1).getBackground().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-        host.getTabWidget().getChildAt(2).getBackground().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-
-        host.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-                if(tabId.equals("Todas")){
-                    TipoFiltro = 0;
-                }else if(tabId.equals("Pendentes")) {
-                    TipoFiltro = 1;
-                }else{
-                    TipoFiltro = 2;
+                    exibirData();
                 }
-                exibirData();
-            }
-        });
+            });
 
-        SwipeMenuListView mListView = (SwipeMenuListView) findViewById(R.id.lstAtividades);
-        // step 1. create a MenuCreator
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
+            SwipeMenuListView mListView = (SwipeMenuListView) findViewById(R.id.lstAtividades);
+            // step 1. create a MenuCreator
+            SwipeMenuCreator creator = new SwipeMenuCreator() {
 
-            @Override
-            public void create(SwipeMenu menu) {
-                // Create different menus depending on the view type
-                if (oList.get(IdList).oActivity.getStatus().equals("Pendente")) {
-                    createPendente(menu);
-                }else{
-                    createRealizada(menu);
+                @Override
+                public void create(SwipeMenu menu) {
+                    // Create different menus depending on the view type
+                    if (oList.get(IdList).oActivity.getStatus().equals("Pendente")) {
+                        createPendente(menu);
+                    } else {
+                        createRealizada(menu);
+                    }
+                    IdList++;
                 }
-                IdList++;
-            }
 
             private void createPendente(SwipeMenu menu) {
                 SwipeMenuItem item1 = new SwipeMenuItem(getApplicationContext());
@@ -191,8 +193,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 item2.setTitleColor(Color.WHITE);
                 item2.setIcon(R.mipmap.ic_deletewhite);
 
-                menu.addMenuItem(item2);
-            }
+                    menu.addMenuItem(item2);
+                }
 
             private void createRealizada(SwipeMenu menu) {
                 SwipeMenuItem item1 = new SwipeMenuItem(getApplicationContext());
@@ -223,47 +225,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 menu.addMenuItem(item2);
             }
 
-        };
+            };
 
-        // set creator
-        mListView.setMenuCreator(creator);
+            // set creator
+            mListView.setMenuCreator(creator);
 
-        mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+            mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
 
-                IdList = position;
-                id = oList.get(position).oActivity.getId();
+                    IdList = position;
+                    id = oList.get(position).oActivity.getId();
 
-                switch (index) {
-                    case 0:
-                        new dbAsyncTaskUpdateStatus().execute();
-                        break;
+                    switch (index) {
+                        case 0:
+                            new dbAsyncTaskUpdateStatus().execute();
+                            break;
 
-                    case 1:
-                        Intent intent = new Intent(MainActivity.this, ActivityView.class);
-                        Bundle b = new Bundle();
-                        b.putLong("key", oList.get(IdList).oActivity.getId()); //Your id
-                        intent.putExtras(b); //Put your id to your next Intent
-                        startActivity(intent);
+                        case 1:
+                            String id = Long.toString(oList.get(IdList).oActivity.getId());
+                            startActivity(new Intent(MainActivity.this, ActivityView.class).putExtra("key", id));
+                            break;
 
-                        break;
-
-                    case 2:
-                        // delete
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setMessage("Deseja realmente excluir esta atividade ?")
-                                .setPositiveButton("Sim", dialogClickListener)
-                                .setNegativeButton("Não", dialogClickListener).show();
-                        break;
+                        case 2:
+                            // delete
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setMessage("Deseja realmente excluir esta atividade ?")
+                                    .setPositiveButton("Sim", dialogClickListener)
+                                    .setNegativeButton("Não", dialogClickListener).show();
+                            break;
+                    }
+                    // false : close the menu; true : not close the menu
+                    return false;
                 }
-                // false : close the menu; true : not close the menu
-                return false;
-            }
-        });
+            });
 
-        exibirData();
+            exibirData();
+        }
+        catch (Exception e){
+            Log.e("Erro", e.getMessage());
+        }
+    }
 
+    protected void onStart() {
+        super.onStart();
+        new dbAsyncTask().execute();
     }
 
     @Override
@@ -338,26 +344,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void LoadLista()
     {
-        lstAtividades = (ListView) findViewById(R.id.lstAtividades);
-        IdList = 0;
+        try {
 
-        if(TipoFiltro == 0){
-            //Todos
-        }else if(TipoFiltro == 1) {
-            //Pendentes
-        }else{
-            //Realizadas
+            lstAtividades = (ListView) findViewById(R.id.lstAtividades);
+            IdList = 0;
+
+            if (TipoFiltro == 0) {
+                //Todos
+            } else if (TipoFiltro == 1) {
+                //Pendentes
+            } else {
+                //Realizadas
+            }
+
+            ArrayList<ActivityDAO.ActivityAndGroup> arrayOfUsers = (ArrayList<ActivityDAO.ActivityAndGroup>) oList;
+            // Create the adapter to convert the array to views
+            adapter = new ActivityAdapter(this, arrayOfUsers);
+            // Attach the adapter to a ListView
+            lstAtividades.setAdapter(adapter);
         }
-
-        ArrayList<ActivityDAO.ActivityAndGroup> arrayOfUsers = (ArrayList<ActivityDAO.ActivityAndGroup>) oList;
-        // Create the adapter to convert the array to views
-        adapter = new ActivityAdapter(this, arrayOfUsers);
-        // Attach the adapter to a ListView
-        lstAtividades.setAdapter(adapter);
+        catch (Exception e){
+            Log.e("Erro", e.getMessage());
+        }
     }
 
-    private class dbAsyncTask extends AsyncTask<Void, Void, Void>
-    {
+    private class dbAsyncTask extends AsyncTask<Void, Void, Void>    {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -396,13 +407,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private class dbAsyncTaskUpdateStatus extends AsyncTask<Void, Void, Void>
-    {
+    private class dbAsyncTaskUpdateStatus extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                oActivityClient.updateStatus(oList.get(IdList).oActivity.getId(), (oList.get(IdList).oActivity.getStatus().equals("Pendente") ? "Concluido" : "Pendente"));
+                Activity activity = oList.get(IdList).oActivity;
+                activity.setStatus(activity.getStatus().equals("Pendente") ? "Concluido" : "Pendente");
+                activityController.AddNewActivity(activity, userLoca, false);
 
                 String Status = "";
                 if(TipoFiltro == 0){
@@ -437,14 +449,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private class dbAsyncTaskDelete extends AsyncTask<Void, Void, Void>
-    {
+    private class dbAsyncTaskDelete extends AsyncTask<Void, Void, Void>    {
 
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                oActivityClient.deleteById(oList.get(IdList).oActivity.getId());
-
+                oActivityClient.deleteById(oList.get(IdList).oActivity, userLoca);
                 String Status = "";
                 if(TipoFiltro == 0){
                     Status = "Todos";

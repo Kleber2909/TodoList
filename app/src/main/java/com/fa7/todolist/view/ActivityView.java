@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.LogPrinter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -48,7 +49,7 @@ public class ActivityView extends AppCompatActivity {
     List<Group> groups;
     Group grupo;
     Activity activity;
-
+    Long key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,8 +105,10 @@ public class ActivityView extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        if(intent.getStringExtra("key") != null)
+        if(intent.getStringExtra("key") != null) {
+            key = Long.parseLong(getIntent().getExtras().getString("key"));
             new GetActivitData(this, intent.getStringExtra("key")).execute();
+        }
     }
 
     private void InitializeComponents() {
@@ -150,33 +153,42 @@ public class ActivityView extends AppCompatActivity {
     }
 
     public void SaveActivity(){
-        if(grupo.getId() == 0) {
-            SnackbarMessage.setProgressMessage(lay_activity, false, ": Selecione o grupo.");
-            return;
+        try {
+            if (grupo.getId() == 0) {
+                SnackbarMessage.setProgressMessage(lay_activity, false, ": Selecione o grupo.");
+                return;
+            }
+
+            if (edt_title.getText().toString().equals("")) {
+                SnackbarMessage.setProgressMessage(lay_activity, false, ": Informe um título.");
+                return;
+            }
+
+            if (edt_activity_date.getText().toString().equals("")) {
+                SnackbarMessage.setProgressMessage(lay_activity, false, ": Informe uma data.");
+                return;
+            }
+
+            if (rbg_status.getCheckedRadioButtonId() == -1) {
+                SnackbarMessage.setProgressMessage(lay_activity, false, ": Selecione um status.");
+                return;
+            }
+
+            String title = edt_title.getText().toString();
+            String description = edt_description.getText().toString();
+            String data = edt_activity_date.getText().toString();
+            String status = ((RadioButton) findViewById(rbg_status.getCheckedRadioButtonId())).getText().toString();
+            Activity activity;
+            if(key == null)
+                activity = new Activity(Long.toString(grupo.getId()), title, description, data, prioridade, status);
+            else
+                activity = new Activity(key, Long.toString(grupo.getId()), title, description, data, prioridade, status);
+
+            new SaveActivity(getApplicationContext(), activity).execute();
         }
-
-        if(edt_title.getText().toString().equals("")) {
-            SnackbarMessage.setProgressMessage(lay_activity, false, ": Informe um título.");
-            return;
+        catch (Exception e){
+            Log.e("Erro", e.getMessage());
         }
-
-        if(edt_activity_date.getText().toString().equals("")) {
-            SnackbarMessage.setProgressMessage(lay_activity, false, ": Informe uma data.");
-            return;
-        }
-
-        if(rbg_status.getCheckedRadioButtonId() == -1) {
-            SnackbarMessage.setProgressMessage(lay_activity, false, ": Selecione um status.");
-            return;
-        }
-
-        String title = edt_title.getText().toString();
-        String description = edt_description.getText().toString();
-        String data = edt_activity_date.getText().toString();
-        String status = ((RadioButton) findViewById(rbg_status.getCheckedRadioButtonId())).getText().toString();
-
-        Activity activity = new Activity(Long.toString(grupo.getId()), title, description, data, prioridade, status);
-        new SaveActivity(getApplicationContext(), activity).execute();
     }
 
     private class SaveActivity extends AsyncTask<Activity, Void, Boolean> {
@@ -191,7 +203,12 @@ public class ActivityView extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Activity... params) {
             try {
-                progress = activityController.AddNewActivity(activity, userLoca);
+                if(key != null)
+                {
+                    progress = activityController.AddNewActivity(activity, userLoca, false);
+                }else{
+                    progress = activityController.AddNewActivity(activity, userLoca, true);
+                }
             }
             catch (Exception e){
                 Log.e("Erro", e.getMessage());
@@ -203,7 +220,11 @@ public class ActivityView extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean progress) {
             super.onPostExecute(progress);
-            SnackbarMessage.setProgressMessage(lay_activity, progress, " ao Adicionar Atividade.");
+            if(key == null)
+                SnackbarMessage.setProgressMessage(lay_activity, progress, " ao Adicionar Atividade.");
+            else
+                SnackbarMessage.setProgressMessage(lay_activity, progress, " ao Atualizar Atividade.");
+            onBackPressed();
         }
     }
 
@@ -264,32 +285,35 @@ public class ActivityView extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        for(int i =0; i<groups.size(); i++) {
-                            if(groups.get(i).getId() == (Long.parseLong(activity.getIdGrupo())))
-                                cbx_groups.setSelection(i);
+                        try {
+                            for (int i = 0; i < groups.size(); i++) {
+                                if (groups.get(i).getId() == (Long.parseLong(activity.getIdGrupo())))
+                                    cbx_groups.setSelection(i);
+                            }
+                            switch (activity.getPrioridade()) {
+                                case "Alta":
+                                    cbx_priority.setSelection(0);
+                                    break;
+                                case "Média":
+                                    cbx_priority.setSelection(1);
+                                    break;
+                                case "Baixa":
+                                    cbx_priority.setSelection(2);
+                                    break;
+                            }
+                            edt_activity_date.setText(activity.getData());
+                            edt_description.setText(activity.getDescricao());
+                            edt_title.setText(activity.getTitulo());
+                            if (activity.getStatus().equals("Pendente"))
+                                rb_pending.setChecked(true);
+                            else
+                                rb_sucess.setChecked(true);
+                        } catch (Exception e) {
+                            Log.e("Erro", e.getMessage());
                         }
-                        switch (activity.getPrioridade()) {
-                            case "Alta" :
-                                cbx_priority.setSelection(0);
-                                break;
-                            case "Média" :
-                                cbx_priority.setSelection(1);
-                                break;
-                            case "Baixa" :
-                                cbx_priority.setSelection(2);
-                                break;
-                        }
-                        edt_activity_date.setText(activity.getData());
-                        edt_description.setText(activity.getDescricao());
-                        edt_title.setText(activity.getTitulo());
-                        if(activity.getStatus().equals("Pendente"))
-                            rb_pending.setChecked(true);
-                        else
-                            rb_sucess.setChecked(true);
                     }
                 });
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.e("Erro", e.getMessage());
             }
             return true;

@@ -153,7 +153,7 @@ public class FireBasePersistence extends AppCompatActivity {
                         .child("Groups")
                         .child(activity.getIdGrupo())
                         .child("collaboratorList")
-                        .child(collaborator.getId())
+                        .child(String.valueOf(collaborator.getIdFarebase()))
                         .setValue(collaborator);
 
             } else
