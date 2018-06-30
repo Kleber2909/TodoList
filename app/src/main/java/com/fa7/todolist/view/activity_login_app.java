@@ -165,6 +165,7 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
                 collaborator.setId(account.getIdToken());
                 collaborator.setNomeColaborador(account.getDisplayName());
                 collaborator.setEmail(account.getEmail());
+                collaborator.setImagePath(account.getPhotoUrl().getPath());
                 collaborator.setTypeLogin("G");
 
                 new dbAsyncTask(collaborator).execute();

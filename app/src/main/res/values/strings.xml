@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Minhas Atividades </string>
     <string name="app_group">Meus Grupos </string>
-    <string name="app_people">Pessoas </string>
+    <string name="app_people">Participantes </string>
 
     <string name="str_people_add">Adicionar </string>
     <string name="str_people_share">Compartilhar </string>

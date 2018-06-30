@@ -18,10 +18,7 @@
         </activity>
 
         <activity android:name=".view.ActivityView">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
         <activity android:name=".view.MainActivity">
@@ -49,7 +46,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.PeopleDetailView"
+        <activity android:name=".view.CollaboratorDetailView"
             android:label="@string/app_people">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

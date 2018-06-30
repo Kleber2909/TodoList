@@ -42,7 +42,7 @@ public class GroupCollaboratorClient extends ClientBase {
         return null;
     }
 
-    public List<GroupCollaborator> getAllByGroup(int idGroup) {
+    public List<GroupCollaborator> getAllByGroup(long idGroup) {
         try {
             return db.getGroupCollaborator().getAllByGroup(idGroup);
         } catch (Exception e) {

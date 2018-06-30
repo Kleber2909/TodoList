@@ -1,4 +1,4 @@
-package com.fa7.todolist.adapters;
+package com.fa7.todolist.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -25,7 +25,7 @@ public class CollaboratorAdapter extends RecyclerView.Adapter<CollaboratorAdapte
     @NonNull
     @Override
     public ViewHolderAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.people_detail_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.collaborator_detail_item, parent, false);
         return new ViewHolderAdapter(v);
     }
 
