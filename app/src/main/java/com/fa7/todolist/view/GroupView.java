@@ -37,6 +37,7 @@ import com.fa7.todolist.controller.GroupController;
 import com.fa7.todolist.model.Group;
 import com.fa7.todolist.utils.SnackbarMessage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +89,14 @@ public class GroupView extends AppCompatActivity {
             listViewGroups = (ListView) findViewById(R.id.listGroups);
             listViewGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(getBaseContext(), "Click ListView", Toast.LENGTH_SHORT);
+
+                    Intent intent = new Intent(GroupView.this, CollaboratorDetailView.class);
+                    Bundle b = new Bundle();
+                    b.putLong("idGrupo", groupList.get(position).getId());
+                    b.putString("nomeGrupo", groupList.get(position).getNomeGrupo());
+                    intent.putExtras(b);
+                    startActivity(intent);
+
                 }
             });
 

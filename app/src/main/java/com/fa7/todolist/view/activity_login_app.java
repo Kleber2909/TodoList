@@ -132,13 +132,13 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
 //            }
 //        });
 
-        Collaborator collaborator = new CollaboratorController(this).GetUserLocal();
         if(getIntent().getExtras().containsKey("key"))
         {
             FirebaseAuth.getInstance().signOut();
             signOut();
             collaboratorClient.DelLocalUser();
         }else {
+            Collaborator collaborator = new CollaboratorController(this).GetUserLocal();
             if (!collaborator.getId().equals(""))
                 StartMainActivity();
         }

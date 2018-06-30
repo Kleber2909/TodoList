@@ -37,11 +37,7 @@ public class FireBasePersistence extends AppCompatActivity {
     public FireBasePersistence(Context context){
         try {
             this.context = context;
-            Collaborator collaborator = new CollaboratorController(context).GetUserLocal();
-            if (collaborator.getTypeLogin().equals("G"))
-                firebaseAuthWithGoogle(collaborator.getId());
-            else
-                GetDataBaseReference();
+            GetDataBaseReference();
         }
         catch (Exception e){
             Log.e("Erro", e.getMessage());
