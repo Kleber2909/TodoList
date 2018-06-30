@@ -1,6 +1,7 @@
 package com.fa7.todolist.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.fa7.todolist.R;
+import com.fa7.todolist.client.CollaboratorClient;
+import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.client.ActivityClient;
 import com.fa7.todolist.client.CollaboratorClient;
 import com.fa7.todolist.controller.CollaboratorController;
@@ -21,6 +24,8 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -43,12 +48,21 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URL;
+
+import static com.facebook.Profile.getCurrentProfile;
+import static com.facebook.internal.ImageRequest.getProfilePictureUri;
+
 public class activity_login_app extends AppCompatActivity implements View.OnClickListener {
 
     private SignInButton btnGoogle;
     private GoogleSignInOptions gso;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
+
     private final int RC_SIGN_IN = 99;
     private final String TAG = getResources().getString(R.string.app_name);
     private CallbackManager mCallbackManager;
@@ -81,6 +95,30 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
+
+                Uri o = getCurrentProfile().getProfilePictureUri(100,100);
+
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(
+                                    JSONObject object,
+                                    GraphResponse response) {
+                                try {
+                                    String email = object.getString("email");
+                                    String nome = object.getString("name");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email ");
+                request.setParameters(parameters);
+                request.executeAsync();
+
             }
 
             @Override
