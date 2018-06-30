@@ -99,7 +99,9 @@ public class ActivityView extends AppCompatActivity {
             this.setTitle("Adicionar Atividade");
         }
 
-        //cbx_groups.setSelection();
+        if(getIntent().getExtras().containsKey("Data")){
+            edt_activity_date.setText(getIntent().getExtras().getString("Data"));
+        }
 
         Intent intent = getIntent();
         if(intent.getStringExtra("key") != null)

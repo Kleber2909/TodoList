@@ -64,8 +64,8 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
     private FirebaseAuth mAuth;
 
     private final int RC_SIGN_IN = 99;
-    private final String TAG = getResources().getString(R.string.app_name);
-    private CallbackManager mCallbackManager;
+    private final String TAG = "LOG";
+//    private CallbackManager mCallbackManager;
     CollaboratorClient collaboratorClient;
 
 
@@ -87,55 +87,61 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
         btnGoogle.setOnClickListener(this);
 
         // Initialize Facebook Login button
-        mCallbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = findViewById(R.id.btnFacebook);
-        loginButton.setReadPermissions("email", "public_profile");
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
-
-                Uri o = getCurrentProfile().getProfilePictureUri(100,100);
-
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(
-                                    JSONObject object,
-                                    GraphResponse response) {
-                                try {
-                                    String email = object.getString("email");
-                                    String nome = object.getString("name");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email ");
-                request.setParameters(parameters);
-                request.executeAsync();
-
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-            }
-        });
+//        mCallbackManager = CallbackManager.Factory.create();
+//        LoginButton loginButton = findViewById(R.id.btnFacebook);
+//        loginButton.setReadPermissions("email", "public_profile");
+//        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+//                handleFacebookAccessToken(loginResult.getAccessToken());
+//
+//                Uri o = getCurrentProfile().getProfilePictureUri(100,100);
+//
+//                GraphRequest request = GraphRequest.newMeRequest(
+//                        loginResult.getAccessToken(),
+//                        new GraphRequest.GraphJSONObjectCallback() {
+//                            @Override
+//                            public void onCompleted(
+//                                    JSONObject object,
+//                                    GraphResponse response) {
+//                                try {
+//                                    String email = object.getString("email");
+//                                    String nome = object.getString("name");
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                            }
+//                        });
+//                Bundle parameters = new Bundle();
+//                parameters.putString("fields", "id,name,email ");
+//                request.setParameters(parameters);
+//                request.executeAsync();
+//
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//                Log.d(TAG, "facebook:onCancel");
+//            }
+//
+//            @Override
+//            public void onError(FacebookException error) {
+//                Log.d(TAG, "facebook:onError", error);
+//            }
+//        });
 
         Collaborator collaborator = new CollaboratorController(this).GetUserLocal();
-        if (!collaborator.getId().equals(""))
-            StartMainActivity();
-
+        if(getIntent().getExtras().containsKey("key"))
+        {
+            FirebaseAuth.getInstance().signOut();
+            signOut();
+            collaboratorClient.DelLocalUser();
+        }else {
+            if (!collaborator.getId().equals(""))
+                StartMainActivity();
+        }
         mAuth = FirebaseAuth.getInstance();
     }
 
@@ -153,7 +159,7 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
         super.onActivityResult(requestCode, resultCode, data);
 
         // Pass the activity result back to the Facebook SDK
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+//        mCallbackManager.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -168,9 +174,9 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
                 collaborator.setImagePath(account.getPhotoUrl().getPath());
                 collaborator.setTypeLogin("G");
 
-                new dbAsyncTask(collaborator).execute();
-
                 firebaseAuthWithGoogle(account);
+
+                new dbAsyncTask(collaborator).execute();
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -181,6 +187,26 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        revokeAccess();
+                    }
+                });
+    }
+
+    private void revokeAccess() {
+        mGoogleSignInClient.revokeAccess()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // ...
+                    }
+                });
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -204,27 +230,27 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
                 });
     }
 
-    private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
-
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(activity_login_app.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
+//    private void handleFacebookAccessToken(AccessToken token) {
+//        Log.d(TAG, "handleFacebookAccessToken:" + token);
+//
+//        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+//        mAuth.signInWithCredential(credential)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            // Sign in success, update UI with the signed-in user's information
+//                            Log.d(TAG, "signInWithCredential:success");
+//                            FirebaseUser user = mAuth.getCurrentUser();
+//                        } else {
+//                            // If sign in fails, display a message to the user.
+//                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+//                            Toast.makeText(activity_login_app.this, "Authentication failed.",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//    }
 
     private class dbAsyncTask extends AsyncTask<Void, Void, Void> {
         Collaborator collaborator;
@@ -253,7 +279,7 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
 
     private void StartMainActivity()
     {
-        startActivity(new Intent(this, GroupView.class));//.putExtra("key", "1530322061261"));
+        startActivity(new Intent(this, MainActivity.class));//.putExtra("key", "1530322061261"));
         onBackPressed();
     }
 }

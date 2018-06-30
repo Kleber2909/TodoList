@@ -104,6 +104,10 @@ public class CollaboratorClient extends ClientBase {
                 collaborator.getId()+"|"+collaborator.getNomeColaborador()+"|"+collaborator.getEmail()+"|G|"+collaborator.getImagePath());
     }
 
+    public void DelLocalUser(){
+        new FileData().delText(context);
+    }
+
     @Override
     public void setMessage(Exception e) {
         Log.i(e.getStackTrace()[0].getClassName() + " - " + e.getStackTrace()[0].getMethodName(), e.getMessage());

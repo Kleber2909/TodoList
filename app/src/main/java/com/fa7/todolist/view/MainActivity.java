@@ -34,6 +34,7 @@ import com.fa7.todolist.adapter.ActivityAdapter;
 import com.fa7.todolist.client.ActivityClient;
 import com.fa7.todolist.controller.GroupController;
 import com.fa7.todolist.model.Activity;
+import com.fa7.todolist.persistence.File.FileData;
 import com.fa7.todolist.persistence.firebase.FireBasePersistence;
 import com.fa7.todolist.persistence.room.ActivityDAO;
 
@@ -165,12 +166,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             private void createPendente(SwipeMenu menu) {
                 SwipeMenuItem item1 = new SwipeMenuItem(getApplicationContext());
-                item1.setBackground(new ColorDrawable(Color.rgb(68, 216, 113)));
+                item1.setBackground(new ColorDrawable(Color.rgb(17, 102, 17)));
                 item1.setWidth(dp2px(90));
                 item1.setTitle("Concluído");
                 item1.setTitleSize(10);
-                item1.setTitleColor(Color.BLACK);
-                item1.setIcon(R.mipmap.ic_checked_transp);
+                item1.setTitleColor(Color.WHITE);
+                item1.setIcon(R.mipmap.ic_checkwhite);
                 menu.addMenuItem(item1);
 
                 SwipeMenuItem item3 = new SwipeMenuItem(getApplicationContext());
@@ -178,8 +179,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 item3.setWidth(dp2px(90));
                 item3.setTitle("Editar");
                 item3.setTitleSize(10);
-                item3.setTitleColor(Color.BLACK);
-                item3.setIcon(R.mipmap.ic_edit_transp);
+                item3.setTitleColor(Color.WHITE);
+                item3.setIcon(R.mipmap.ic_editwhite);
                 menu.addMenuItem(item3);
 
                 SwipeMenuItem item2 = new SwipeMenuItem(getApplicationContext());
@@ -187,20 +188,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 item2.setWidth(dp2px(90));
                 item2.setTitle("Excluir");
                 item2.setTitleSize(10);
-                item2.setTitleColor(Color.BLACK);
-                item2.setIcon(R.mipmap.ic_delete_transp);
+                item2.setTitleColor(Color.WHITE);
+                item2.setIcon(R.mipmap.ic_deletewhite);
 
                 menu.addMenuItem(item2);
             }
 
             private void createRealizada(SwipeMenu menu) {
                 SwipeMenuItem item1 = new SwipeMenuItem(getApplicationContext());
-                item1.setBackground(new ColorDrawable(Color.rgb(68, 216, 113)));
+                item1.setBackground(new ColorDrawable(Color.rgb(17, 102, 17)));
                 item1.setWidth(dp2px(90));
                 item1.setTitle("Pendente");
                 item1.setTitleSize(10);
-                item1.setTitleColor(Color.BLACK);
-                item1.setIcon(R.mipmap.ic_unchecked_transp);
+                item1.setTitleColor(Color.WHITE);
+                item1.setIcon(R.mipmap.ic_uncheckwhite);
                 menu.addMenuItem(item1);
 
                 SwipeMenuItem item3 = new SwipeMenuItem(getApplicationContext());
@@ -208,8 +209,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 item3.setWidth(dp2px(90));
                 item3.setTitle("Editar");
                 item3.setTitleSize(10);
-                item3.setTitleColor(Color.BLACK);
-                item3.setIcon(R.mipmap.ic_edit_transp);
+                item3.setTitleColor(Color.WHITE);
+                item3.setIcon(R.mipmap.ic_editwhite);
                 menu.addMenuItem(item3);
 
                 SwipeMenuItem item2 = new SwipeMenuItem(getApplicationContext());
@@ -217,8 +218,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 item2.setWidth(dp2px(90));
                 item2.setTitle("Excluir");
                 item2.setTitleSize(10);
-                item2.setTitleColor(Color.BLACK);
-                item2.setIcon(R.mipmap.ic_delete_transp);
+                item2.setTitleColor(Color.WHITE);
+                item2.setIcon(R.mipmap.ic_deletewhite);
                 menu.addMenuItem(item2);
             }
 
@@ -274,10 +275,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.LstGrupo:
-                Intent intent = new Intent(MainActivity.this, GroupView.class);
+                intent = new Intent(MainActivity.this, GroupView.class);
                 startActivity(intent);
+                break;
+            case R.id.Sair:
+
+                intent = new Intent(MainActivity.this, activity_login_app.class);
+                Bundle b = new Bundle();
+                b.putString("key", "Logout");
+                intent.putExtras(b);
+                startActivity(intent);
+
                 break;
             default:
                 break;
@@ -298,6 +309,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.fabNovo:
                 Intent intent = new Intent(MainActivity.this, ActivityView.class);
+                Bundle b = new Bundle();
+                b.putString("Data", getDate()); //Your id
+                intent.putExtras(b); //Put your id to your next Intent
                 startActivity(intent);
                 break;
         }
