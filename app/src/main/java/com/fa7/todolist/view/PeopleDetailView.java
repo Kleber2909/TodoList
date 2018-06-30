@@ -172,12 +172,13 @@ public class PeopleDetailView extends AppCompatActivity {
             //final CollaboratorAdapter adapter = new CollaboratorAdapter(context, collaboratorList);
 
 
-            listCollaborators.setAdapter(adapter);
+
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    listCollaborators.setAdapter(adapter);
+
+                   // listCollaborators.setAdapter(adapter);
                 }
             });
 

@@ -17,13 +17,13 @@ import java.util.List;
 public class CollaboratorController {
 
     Context context;
-    static FireBasePersistence fireBasePersistence;
+    //static FireBasePersistence fireBasePersistence;
     static AppDatabase appDatabase;
     static CollaboratorClient collaboratorClient;
 
     public CollaboratorController(Context context) {
         this.context = context;
-        fireBasePersistence = new FireBasePersistence(context);
+        //fireBasePersistence = new FireBasePersistence(context);
         appDatabase = MainDatabase.getInstance(context);
         collaboratorClient = new CollaboratorClient(context);
     }
