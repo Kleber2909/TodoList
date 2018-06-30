@@ -1,53 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_weight="1"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabNovo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="35dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/holo_blue_dark"
+        android:src="@mipmap/ic_add"
+        app:fabSize="normal"
+        app:elevation="4dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+        tools:context="com.rfinance.despesas.activity_despesas">
 
-        <EditText
-            android:id="@+id/editText"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="#8BCBE0"
+            android:orientation="horizontal"
+            tools:context="com.rfinance.despesas.activity_despesas">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabAnterior"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="60dp"
+                android:layout_marginStart="60dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@mipmap/ic_previous"
+                app:backgroundTint="@android:color/background_light"
+                app:fabSize="mini" />
+
+            <TextView
+                android:id="@+id/txbData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="TextView"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabProximo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="60dp"
+                android:clickable="true"
+                android:src="@mipmap/ic_next"
+                app:backgroundTint="@android:color/background_light"
+                app:fabSize="mini" />
+
+        </RelativeLayout>
+
+        <TabHost
+            android:id="@+id/tabHost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            tools:layout_editor_absoluteX="53dp"
-            tools:layout_editor_absoluteY="125dp" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true">
 
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            tools:layout_editor_absoluteX="53dp"
-            tools:layout_editor_absoluteY="187dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="gravar"
-            android:text="Button"
-            tools:layout_editor_absoluteX="93dp"
-            tools:layout_editor_absoluteY="297dp" />
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></TabWidget>
 
-        <Button
-            android:id="@+id/button2"
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/tabTodos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#ffc916"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tabPendentes"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#da8200"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tabRealizadas"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#5b89ff"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+        </TabHost>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="remover"
-            android:text="Button"
-            tools:layout_editor_absoluteX="93dp"
-            tools:layout_editor_absoluteY="366dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.baoyz.swipemenulistview.SwipeMenuListView
+                android:id="@+id/lstAtividades"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_weight="1" />
+
+        </RelativeLayout>
 
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+
+</android.support.design.widget.CoordinatorLayout>
