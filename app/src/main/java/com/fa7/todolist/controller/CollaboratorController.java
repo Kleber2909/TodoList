@@ -52,6 +52,7 @@ public class CollaboratorController {
             user.setId(userCSV[0]);
             user.setNomeColaborador(userCSV[1]);
             user.setEmail(userCSV[2]);
+            user.setTypeLogin(userCSV[3]);
         }
         catch (Exception e){
             Log.e("GetUserLocal", e.getMessage());
