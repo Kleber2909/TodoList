@@ -8,8 +8,8 @@ public abstract class ControllerBase {
     Context context;
     AppCompatActivity appCompatActivity;
 
-    public ControllerBase(Context context, AppCompatActivity appCompatActivity){
-        this.context = context;
+    public ControllerBase(AppCompatActivity appCompatActivity){
         this.appCompatActivity = appCompatActivity;
+        this.context = this.appCompatActivity.getApplicationContext();
     }
 }

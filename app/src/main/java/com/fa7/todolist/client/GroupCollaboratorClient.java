@@ -32,7 +32,7 @@ public class GroupCollaboratorClient extends ClientBase {
         return null;
     }
 
-    public List<GroupCollaborator> getAllByCollaborator(int idCollaborator) {
+    public List<GroupCollaborator> getAllByCollaborator(String idCollaborator) {
         try {
             return db.getGroupCollaborator().getAllByCollaborator(idCollaborator);
         } catch (Exception e) {

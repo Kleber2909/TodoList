@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="2dp"
+        card_view:contentPadding="10dp"
+        >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/txbTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text="Título"
+                />
+
+            <TextView
+                android:id="@+id/txbGrupo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txbTitulo"
+                android:layout_marginTop="5dp"
+                android:text="Grupo"
+                />
+
+            <TextView
+                android:id="@+id/txbPrioridade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txbGrupo"
+                android:layout_marginTop="5dp"
+                android:text="Prioridade"
+                />
+
+            <ImageView
+                android:id="@+id/imgChecked"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_below="@id/txbGrupo"
+                android:layout_marginRight="16dp"
+                android:layout_toLeftOf="@id/txbStatus"
+                android:src="@mipmap/ic_checked" />
+
+            <TextView
+                android:id="@+id/txbStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txbGrupo"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:text="Status"
+                />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -1,5 +1,12 @@
 <resources>
-    <string name="app_name">Minha aplicacão</string>
+    <string name="app_name">Minhas Atividades </string>
+    <string name="app_group">Meus Grupos </string>
+    <string name="app_people">Pessoas </string>
+
+    <string name="str_people_add">Adicionar </string>
+    <string name="str_people_share">Compartilhar </string>
+
+
     <string name="str_activity_title">Título da tarefa</string>
     <string name="str_txt_status">Status</string>
     <string name="str_rb_pending"> Pendente </string>
@@ -8,4 +15,13 @@
     <string name="str_txt_group_name">Nome do grupo</string>
     <string name="str_profile_name">Nome do usuário</string>
     <string name="str_profile_email">E-mail do usuário</string>
+    <string name="facebook_app_id">2057912687784158</string>
+    <string name="fb_login_protocol_scheme">fb2057912687784158</string>
+    <string name="str_add_group"> Adicionar grupo</string>
+    <string name="str_btn_add">Salvar</string>
+    <string name="str_edt_group_name_join">Código do grupo</string>
+    <string name="str_edt_group_name">Nome do grupo</string>
+    <string name="str_btn_join">Entrar</string>
+    <string name="str_btn_update">Atualizar</string>
+
 </resources>
