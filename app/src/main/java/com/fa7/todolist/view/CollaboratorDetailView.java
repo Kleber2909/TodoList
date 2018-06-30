@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -62,17 +63,6 @@ public class CollaboratorDetailView extends AppCompatActivity {
             txt_group_name.setText(group.getNomeGrupo());
             collaboratorController = new CollaboratorController(this);
             collaboratorList = new ArrayList<Collaborator>();
-
-//            Collaborator c = new Collaborator();
-//            c.setEmail("leandro.jpinh@hotmail.com");
-//            c.setId("1");
-//            c.setNomeColaborador("Leandro Jackson");
-//            c.setImagePath("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShHcL_4_qXcoDlij-lr6b6enHzHnqWs_g2iwArpLrT8kE_IY2H");
-//            collaboratorList.add(c);
-//            collaboratorList.add(c);
-//            collaboratorList.add(c);
-//            collaboratorList.add(c);
-//            collaboratorList.add(c);
 
         try {
             synchronized(collaboratorList) {
@@ -131,11 +121,14 @@ public class CollaboratorDetailView extends AppCompatActivity {
 
             @Override
             public void create(SwipeMenu menu) {
-                SwipeMenuItem delete = new SwipeMenuItem(getApplicationContext());
-                delete.setBackground(new ColorDrawable(Color.rgb(255, 79, 71)));
-                delete.setWidth(100);
-                delete.setIcon(R.mipmap.ic_item_delete);
-                menu.addMenuItem(delete);
+                SwipeMenuItem item2 = new SwipeMenuItem(getApplicationContext());
+                item2.setBackground(new ColorDrawable(Color.rgb(212, 32, 32)));
+                item2.setWidth(dp2px(90));
+                item2.setTitle("Excluir");
+                item2.setTitleSize(10);
+                item2.setTitleColor(Color.WHITE);
+                item2.setIcon(R.mipmap.ic_deletewhite);
+                menu.addMenuItem(item2);
             }
         };
 
@@ -210,5 +203,12 @@ public class CollaboratorDetailView extends AppCompatActivity {
 
             dialog.dismiss();
         }
+
+    }
+
+    private int dp2px(int dp)
+    {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                getResources().getDisplayMetrics());
     }
 }

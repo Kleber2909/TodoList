@@ -172,7 +172,7 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
                 collaborator.setId(account.getIdToken());
                 collaborator.setNomeColaborador(account.getDisplayName());
                 collaborator.setEmail(account.getEmail());
-                collaborator.setImagePath(account.getPhotoUrl().getPath());
+                collaborator.setImagePath(account.getPhotoUrl().toString());
                 collaborator.setTypeLogin("G");
                 collaborator.setIdFarebase(new Date().getTime());
 

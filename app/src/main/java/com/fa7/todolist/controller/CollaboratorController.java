@@ -66,6 +66,7 @@ public class CollaboratorController {
             user.setEmail(userCSV[2]);
             user.setTypeLogin(userCSV[3]);
             user.setImagePath(userCSV[4]);
+
             user.setIdFarebase(Long.parseLong(userCSV[5]));
         }
         catch (Exception e){
