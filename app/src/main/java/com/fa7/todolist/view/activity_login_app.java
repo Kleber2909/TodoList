@@ -214,7 +214,7 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
 
     private void StartMainActivity()
     {
-        startActivity(new Intent(this, ActivityView.class).putExtra("key", "1530322061261"));
+        startActivity(new Intent(this, GroupView.class));//.putExtra("key", "1530322061261"));
         onBackPressed();
     }
 }

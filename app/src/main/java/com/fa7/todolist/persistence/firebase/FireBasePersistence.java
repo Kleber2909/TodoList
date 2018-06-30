@@ -35,12 +35,17 @@ public class FireBasePersistence extends AppCompatActivity {
     private String uID;
 
     public FireBasePersistence(Context context){
-        this.context = context;
-        Collaborator collaborator = new CollaboratorController(context).GetUserLocal();
-        if(collaborator.getTypeLogin().equals("G"))
-            firebaseAuthWithGoogle(collaborator.getId());
-        else
-            GetDataBaseReference();
+        try {
+            this.context = context;
+            Collaborator collaborator = new CollaboratorController(context).GetUserLocal();
+            if (collaborator.getTypeLogin().equals("G"))
+                firebaseAuthWithGoogle(collaborator.getId());
+            else
+                GetDataBaseReference();
+        }
+        catch (Exception e){
+            Log.e("Erro", e.getMessage());
+        }
     }
 
     // Login E-mail
