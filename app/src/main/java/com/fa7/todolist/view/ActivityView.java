@@ -1,6 +1,7 @@
 package com.fa7.todolist.view;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import com.fa7.todolist.R;
+import com.fa7.todolist.client.ActivityClient;
 import com.fa7.todolist.controller.ActivityController;
 import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.controller.GroupController;
@@ -26,6 +28,7 @@ import com.fa7.todolist.utils.SnackbarMessage;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,11 +41,13 @@ public class ActivityView extends AppCompatActivity {
     FloatingActionButton btn_save;
     public static LinearLayout lay_activity;
     public static ActivityController activityController;
+    ActivityClient activityClient;
     private GroupController groupController;
     private String prioridade;
     static Collaborator userLoca;
     List<Group> groups;
     Group grupo;
+    Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +99,11 @@ public class ActivityView extends AppCompatActivity {
             this.setTitle("Adicionar Atividade");
         }
 
+        //cbx_groups.setSelection();
+
+        Intent intent = getIntent();
+        if(intent.getStringExtra("key") != null)
+            new GetActivitData(this, intent.getStringExtra("key")).execute();
     }
 
     private void InitializeComponents() {
@@ -109,6 +119,7 @@ public class ActivityView extends AppCompatActivity {
         btn_save = (FloatingActionButton) findViewById(R.id.btn_save);
         userLoca = new CollaboratorController(getBaseContext()).GetUserLocal();
         activityController = new ActivityController(this);
+        activityClient = new ActivityClient(this);
         groupController = new GroupController(this);
     }
 
@@ -232,7 +243,60 @@ public class ActivityView extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean progress) {
             super.onPostExecute(progress);
-            SnackbarMessage.setProgressMessage(lay_activity, progress, " ao listar Grupos.");
         }
     }
+
+    private class GetActivitData extends AsyncTask<Void, Void, Boolean> {
+        Context context;
+        String key;
+
+        public GetActivitData(Context context, String key){
+            this.context = context;
+            this.key = key;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                activity = activityClient.getActivity(Long.valueOf(key));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for(int i =0; i<groups.size(); i++) {
+                            if(groups.get(i).getId() == (Long.parseLong(activity.getIdGrupo())))
+                                cbx_groups.setSelection(i);
+                        }
+                        switch (activity.getPrioridade()) {
+                            case "Alta" :
+                                cbx_priority.setSelection(0);
+                                break;
+                            case "Média" :
+                                cbx_priority.setSelection(1);
+                                break;
+                            case "Baixa" :
+                                cbx_priority.setSelection(2);
+                                break;
+                        }
+                        edt_activity_date.setText(activity.getData());
+                        edt_description.setText(activity.getDescricao());
+                        edt_title.setText(activity.getTitulo());
+                        if(activity.getStatus().equals("Pendente"))
+                            rb_pending.setChecked(true);
+                        else
+                            rb_sucess.setChecked(true);
+                    }
+                });
+            }
+            catch (Exception e){
+                Log.e("Erro", e.getMessage());
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean progress) {
+            super.onPostExecute(progress);
+        }
+    }
+
 }

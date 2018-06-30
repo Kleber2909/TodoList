@@ -16,12 +16,22 @@ public class Collaborator {
     private String nomeColaborador;
     @ColumnInfo(name = "email")
     private String email;
+    @ColumnInfo(name = "typrLogin")
+    private String typeLogin;
 
     @Ignore
     public Collaborator(String id, String nomeColaborador, String email) {
         this.id = id;
         this.nomeColaborador = nomeColaborador;
         this.email = email;
+    }
+
+    @Ignore
+    public Collaborator(String id, String nomeColaborador, String email, String typeLogin) {
+        this.id = id;
+        this.nomeColaborador = nomeColaborador;
+        this.email = email;
+        this.typeLogin = typeLogin;
     }
 
     public Collaborator() {
@@ -54,5 +64,13 @@ public class Collaborator {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getTypeLogin() {
+        return typeLogin;
+    }
+
+    public void setTypeLogin(String typeLogin) {
+        this.typeLogin = typeLogin;
     }
 }

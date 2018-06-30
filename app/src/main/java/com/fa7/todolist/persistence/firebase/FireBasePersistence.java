@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.controller.GroupController;
 import com.fa7.todolist.model.Activity;
 import com.fa7.todolist.model.Collaborator;
@@ -33,9 +35,17 @@ public class FireBasePersistence extends AppCompatActivity {
     private String uID;
 
     public FireBasePersistence(Context context){
-        this.context = context;
-
-        GetDataBaseReference();
+        try {
+            this.context = context;
+            Collaborator collaborator = new CollaboratorController(context).GetUserLocal();
+            if (collaborator.getTypeLogin().equals("G"))
+                firebaseAuthWithGoogle(collaborator.getId());
+            else
+                GetDataBaseReference();
+        }
+        catch (Exception e){
+            Log.e("Erro", e.getMessage());
+        }
     }
 
     // Login E-mail
@@ -43,16 +53,16 @@ public class FireBasePersistence extends AppCompatActivity {
         try {
                 FirebaseAuth.getInstance()
                         .signInWithEmailAndPassword("c@c.com.br", "123456")
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             uID = task.getResult().getUser().getUid();
                             databaseReference = FirebaseDatabase.getInstance().getReference();
                             GetGroupOfFirebase();
-                            Log.i("Completo", "Logaod" + uID);
+                            Log.i("GetDataBaseReference", "Logaod" + uID);
                         } else {
-                            Log.i("Erro no login", "Erro no login");
+                            Log.e("Erro no login", "Erro no login");
                         }
                     }
                 });
@@ -63,19 +73,18 @@ public class FireBasePersistence extends AppCompatActivity {
     }
 
     // Login Google
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d("AuthWithGoogle", "firebaseAuthWithGoogle:" + acct.getId());
+    private void firebaseAuthWithGoogle(String IdToken) {
+        Log.d("AuthWithGoogle", "firebaseAuthWithGoogle:" + IdToken);
 
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        AuthCredential credential = GoogleAuthProvider.getCredential(IdToken, null);
         FirebaseAuth.getInstance()
                 .signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("AuthWithGoogle", "signInWithCredential:success");
                             uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            databaseReference = FirebaseDatabase.getInstance().getReference();
                             GetGroupOfFirebase();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -98,9 +107,8 @@ public class FireBasePersistence extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("FacebookAccessToken", "signInWithCredential:success");
                             uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            databaseReference = FirebaseDatabase.getInstance().getReference();
                             GetGroupOfFirebase();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -112,9 +120,9 @@ public class FireBasePersistence extends AppCompatActivity {
                 });
     }
 
-    public void GroupOnFirebase(final Group group, final Boolean add) {
+    public void GroupOnFirebase(final Group group, final Boolean action) {
         try {
-            if (add) {
+            if (action) {
                 databaseReference
                         .child("TodoList")
                         .child("Groups")
@@ -127,8 +135,7 @@ public class FireBasePersistence extends AppCompatActivity {
                         .child(String.valueOf(group.getId()))
                         .removeValue();
 
-            this.MyGroupOnFirebase(group, add);
-
+            this.MyGroupOnFirebase(new Group(group.getId()), action);
         } catch (Exception e) {
             Log.e("DataOnFirebase", e.getMessage());
         }
