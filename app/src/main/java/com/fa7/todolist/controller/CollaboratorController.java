@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.fa7.todolist.client.CollaboratorClient;
+import com.fa7.todolist.client.GroupClient;
 import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.persistence.File.FileData;
 import com.fa7.todolist.persistence.firebase.FireBasePersistence;
@@ -29,6 +30,19 @@ public class CollaboratorController {
 
     public List<Collaborator> GetAllGroup(){
         return appDatabase.getCollaborator().getAll();
+    }
+
+    public boolean Remove(Collaborator collaborator) {
+        try {
+            if(collaborator != null) {
+                collaboratorClient.delete(collaborator);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            Log.i("RemoveCollaborator", e.getMessage());
+            return false;
+        }
     }
 
     public Collaborator GetUserLocal(){
