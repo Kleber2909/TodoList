@@ -104,6 +104,14 @@ public class ActivityClient extends ClientBase {
         }
     }
 
+    public void insertSqLite(Activity activity) {
+        try {
+            db.getActivity().insert(activity);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
     public void delete(Activity activity) {
         try {
             db.getActivity().delete(activity);
@@ -125,6 +133,14 @@ public class ActivityClient extends ClientBase {
         try {
             db.getActivity().update(activity);
             fireBasePersistence.ActivityOnFirebase(activity, collaborator, true);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
+    public void updateSqLite(Activity activity) {
+        try {
+            db.getActivity().update(activity);
         } catch (Exception e) {
             setMessage(e);
         }

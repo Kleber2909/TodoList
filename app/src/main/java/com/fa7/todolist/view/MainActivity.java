@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int TipoFiltro = 0;
     private int IdList = 0;
     long id;
+    private CollaboratorController collaboratorController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             userLoca = new CollaboratorController(getBaseContext()).GetUserLocal();
             activityController = new ActivityController(this);
             groupController = new GroupController(this);
+            collaboratorController = new CollaboratorController(this);
 
             fabAnterior = findViewById(R.id.fabAnterior);
             fabAnterior.setOnClickListener(this);
@@ -269,7 +272,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     protected void onStart() {
         super.onStart();
+        new dbAsyncTaskGetDataFarebase().execute();
         new dbAsyncTask().execute();
+
     }
 
     @Override
@@ -335,15 +340,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    private void exibirData()
-    {
+    private void exibirData(){
         txbData.setText(getDate());
 
         new dbAsyncTask().execute();
     }
 
-    public void LoadLista()
-    {
+    public void LoadLista(){
         try {
 
             lstAtividades = (ListView) findViewById(R.id.lstAtividades);
@@ -488,17 +491,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private int dp2px(int dp)
-    {
+    private int dp2px(int dp){
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
     }
 
-    private String getDate()
-    {
+    private String getDate(){
         SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
         String formatted = format1.format(oCalendar.getTime());
         return formatted;
+    }
+
+    private class dbAsyncTaskGetDataFarebase extends AsyncTask<Void, Void, Void>    {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+
+                groupController.GetSynchronizeFirebase();
+                activityController.GetSynchronizeActivitysFirebase();
+                collaboratorController.GetSynchronizeCollaboratorFirebase();
+
+            } catch (Exception e) {
+                Log.e("Erro", e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute (Void param) {
+            try {
+                super.onPostExecute(param);
+            } catch (Exception e) {
+                Log.e("Erro", e.getMessage());
+            }
+        }
     }
 
 }

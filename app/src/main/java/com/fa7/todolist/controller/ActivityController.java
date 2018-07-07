@@ -1,27 +1,31 @@
 package com.fa7.todolist.controller;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import com.fa7.todolist.client.ActivityClient;
+import com.fa7.todolist.client.GroupClient;
 import com.fa7.todolist.model.Activity;
 import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
+import com.fa7.todolist.persistence.firebase.FireBasePersistence;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityController extends ControllerBase {
 
-    ActivityClient client;
+    static FireBasePersistence fireBasePersistence;
+    static ActivityClient client;
     Activity activity;
 
     public ActivityController(AppCompatActivity appCompatActivity){
         super(appCompatActivity);
-
-
-
+        fireBasePersistence = new FireBasePersistence(context);
         client = new ActivityClient(context);
     }
 
-    // Chamar esse método para entrar em grupo já existente
+    // Chamar esse método para adicionar uma atividade
     public boolean AddNewActivity(Activity activity, Collaborator collaborator, Boolean add){
         try {
             if(activity != null) {
@@ -73,20 +77,49 @@ public class ActivityController extends ControllerBase {
         return priorits;
     }
 
-
-
-    // Chamar esse método para sincronizar os grupos de atividades do Firebase com o SqLite
-    public void GetSynchronizeFirebase(){
-
+    // Chamar esse método para recuperar as atividades do Firebase e sincronizar com o SqLite
+    public void GetSynchronizeActivitysFirebase(){
+        List<Group> groupList = new GroupClient(context).getAll();
+        for (int i = 0; i < groupList.size(); i++)
+            fireBasePersistence.GetActivitys(groupList.get(i));
     }
 
-    // Método chamado após o retorno do evento onDataChange do método GetGroupOfFirebase da classe fireBasePersistence
-    public static void GetMyGroups(List<Group> groupList){
-
+    // Método chamado após o retorno do evento onDataChange do método GetActivitys da classe fireBasePersistence
+    public static void SetMyActivitys(List<Activity> activityList){
+        new dbAsyncTask(activityList).execute();
     }
 
-    // Método chamado para receber do onDataChange do método GetActivitysOfFirebase as atividades e colaboradores dos grupos e enviar para os objetos de persistencia do SqLite
-    public static void UpdateSqLite(Group groupList){
-        int a = 1;
+    private static class dbAsyncTask extends AsyncTask<Void, Void, Void> {
+        List<Activity> activityList;
+
+        public dbAsyncTask(List<Activity> activityList) {
+            this.activityList = activityList;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                // Navega na lista de ativiades do grupo e verifica se já existe no SqLite para Atualizar ou Adicionar
+                for (int i = 0; i < activityList.size(); i++) {
+                    if (client.getActivity(activityList.get(i).getId()) == null)
+                        client.insertSqLite(activityList.get(i));
+                    else
+                        client.updateSqLite(activityList.get(i));
+                }
+            } catch (Exception e) {
+                Log.e("Erro", e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute (Void param) {
+            try {
+                super.onPostExecute(param);
+                // SincFirebase();
+            } catch (Exception e) {
+                Log.e("Erro", e.getMessage());
+            }
+        }
     }
 }

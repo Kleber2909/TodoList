@@ -25,8 +25,8 @@ public interface GroupCollaboratorDAO {
     @Query("SELECT * FROM 'GroupCollaborator' WHERE idGrupo IN (:idGroup)")
     List<GroupCollaborator> getAllByGroup(long idGroup);
 
-    @Query("SELECT * FROM 'GroupCollaborator' WHERE idGrupo IN (:groupId)")
-    GroupCollaborator getCollaboratorInGroup(long groupId);
+    @Query("SELECT * FROM 'GroupCollaborator' WHERE idGrupo = :groupId AND idColaborador = :idColaborador")
+    GroupCollaborator getCollaboratorInGroup(long groupId, String idColaborador);
 
     @Query("DELETE FROM 'GroupCollaborator' WHERE idColaborador in (:idCollaborator)")
     void deleteByCollaborator(int idCollaborator);
