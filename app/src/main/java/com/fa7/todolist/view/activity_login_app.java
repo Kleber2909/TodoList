@@ -46,6 +46,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONException;
@@ -132,13 +133,13 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
 //            }
 //        });
 
-        Collaborator collaborator = new CollaboratorController(this).GetUserLocal();
         if(getIntent().getExtras().containsKey("key"))
         {
             FirebaseAuth.getInstance().signOut();
             signOut();
             collaboratorClient.DelLocalUser();
         }else {
+            Collaborator collaborator = new CollaboratorController(this).GetUserLocal();
             if (!collaborator.getId().equals(""))
                 StartMainActivity();
         }
@@ -171,8 +172,9 @@ public class activity_login_app extends AppCompatActivity implements View.OnClic
                 collaborator.setId(account.getIdToken());
                 collaborator.setNomeColaborador(account.getDisplayName());
                 collaborator.setEmail(account.getEmail());
-                collaborator.setImagePath(account.getPhotoUrl().getPath());
+                collaborator.setImagePath(account.getPhotoUrl().toString());
                 collaborator.setTypeLogin("G");
+                collaborator.setIdFarebase(new Date().getTime());
 
                 firebaseAuthWithGoogle(account);
 

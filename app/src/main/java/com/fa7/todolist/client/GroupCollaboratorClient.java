@@ -84,6 +84,14 @@ public class GroupCollaboratorClient extends ClientBase {
         }
     }
 
+    public void insert(GroupCollaborator groupCollaborator) {
+        try {
+            db.getGroupCollaborator().insert(groupCollaborator);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
     public void delete(GroupCollaborator groupCollaborator) {
         try {
             db.getGroupCollaborator().delete(groupCollaborator);

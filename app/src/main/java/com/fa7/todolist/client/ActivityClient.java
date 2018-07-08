@@ -104,6 +104,14 @@ public class ActivityClient extends ClientBase {
         }
     }
 
+    public void insertSqLite(Activity activity) {
+        try {
+            db.getActivity().insert(activity);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
     public void delete(Activity activity) {
         try {
             db.getActivity().delete(activity);
@@ -112,15 +120,25 @@ public class ActivityClient extends ClientBase {
         }
     }
 
-    public void deleteById(long id) {
+    public void deleteById(Activity activity, Collaborator collaborator) {
         try {
-            db.getActivity().deleteById(id);
+            db.getActivity().deleteById(activity.getId());
+            fireBasePersistence.ActivityOnFirebase(activity, collaborator, false);
         } catch (Exception e) {
             setMessage(e);
         }
     }
 
-    public void update(Activity activity) {
+    public void update(Activity activity, Collaborator collaborator) {
+        try {
+            db.getActivity().update(activity);
+            fireBasePersistence.ActivityOnFirebase(activity, collaborator, true);
+        } catch (Exception e) {
+            setMessage(e);
+        }
+    }
+
+    public void updateSqLite(Activity activity) {
         try {
             db.getActivity().update(activity);
         } catch (Exception e) {

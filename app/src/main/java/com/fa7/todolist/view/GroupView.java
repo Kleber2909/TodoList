@@ -33,10 +33,15 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.fa7.todolist.R;
+import com.fa7.todolist.client.GroupCollaboratorClient;
+import com.fa7.todolist.controller.CollaboratorController;
 import com.fa7.todolist.controller.GroupController;
+import com.fa7.todolist.model.Collaborator;
 import com.fa7.todolist.model.Group;
+import com.fa7.todolist.model.GroupCollaborator;
 import com.fa7.todolist.utils.SnackbarMessage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +50,8 @@ import java.util.Map;
 public class GroupView extends AppCompatActivity {
 
     private static GroupController groupController;
+    private static GroupCollaboratorClient groupCollaboratorClient;
+    static Collaborator userLoca;
     public static LinearLayout lay_group;
     private SwipeMenuCreator creator;
     private SwipeMenuListView mListView;
@@ -58,14 +65,18 @@ public class GroupView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_groups);
+        userLoca = new CollaboratorController(getBaseContext()).GetUserLocal();
         InitializeComponents();
         CreatorSwipeMenuCreator();
+        new UpdateListViewTask(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         groupController = new GroupController(this);
+        groupCollaboratorClient = new GroupCollaboratorClient(this);
+        groupController.GetSynchronizeFirebase();
         new UpdateListViewTask(getBaseContext()).execute();
     }
 
@@ -88,7 +99,14 @@ public class GroupView extends AppCompatActivity {
             listViewGroups = (ListView) findViewById(R.id.listGroups);
             listViewGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(getBaseContext(), "Click ListView", Toast.LENGTH_SHORT);
+
+                    Intent intent = new Intent(GroupView.this, CollaboratorDetailView.class);
+                    Bundle b = new Bundle();
+                    b.putLong("idGrupo", groupList.get(position).getId());
+                    b.putString("nomeGrupo", groupList.get(position).getNomeGrupo());
+                    intent.putExtras(b);
+                    startActivity(intent);
+
                 }
             });
 
@@ -368,6 +386,7 @@ public class GroupView extends AppCompatActivity {
         protected Boolean doInBackground(Group... params) {
             try {
                 groupController.AddNewGroup(group);
+                groupCollaboratorClient.insert(new GroupCollaborator(group.getId(), userLoca.getId()));
                 progress = true;
             }
             catch (Exception e){

@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class GroupCollaborator {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "idGrupo")
     private long idGrupo;

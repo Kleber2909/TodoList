@@ -14,7 +14,7 @@ public class GroupClient extends ClientBase {
 
     public List<Group> getAll() {
         try {
-            db.getGroup().getAll();
+            return db.getGroup().getAll();
         } catch (Exception e) {
             setMessage(e);
         }
